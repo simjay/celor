@@ -1,0 +1,12 @@
+{
+  "_comment": "Configuration for CeLoR. All values are read from this file.",
+  "openai": {
+    "api_key": "your_api_key",
+    "model": "gpt-4"
+  },
+  "cegis": {
+    "max_iters": 5,
+    "max_candidates": 1000,
+    "timeout_seconds": 60.0
+  }
+}

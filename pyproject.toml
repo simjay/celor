@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "celor"
+version = "1.0.0"
+description = "CeLoR: CEGIS-in-the-Loop Reasoning - Inference-time verification and repair for LLM-generated artifacts"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [
+    {name = "CeLoR Contributors"}
+]
+dependencies = [
+    "openai>=1.0.0",
+    "ruamel.yaml>=0.18.0",
+    "pytest>=7.0.0",
+]
+
+[project.scripts]
+celor = "celor.cli.main:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "mypy>=1.0.0",
+]
+docs = [
+    "sphinx>=7.0.0",
+    "sphinx_rtd_theme>=2.0.0",
+]
+# Optional external oracle backends (Python-only tools)
+oracles = [
+    "kubernetes-validate>=1.28.0",  # Schema validation (replaces kubectl)
+    "checkov>=3.0.0",                # Policy + security checks (200+ rules)
+]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+strict_equality = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v"

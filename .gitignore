@@ -71,6 +71,9 @@ instance/
 # Sphinx documentation
 docs/_build/
 
+# macOS files
+.DS_Store
+
 # PyBuilder
 .pybuilder/
 target/
@@ -205,3 +208,16 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# CeLoR specific
+# Sketch binary directory (download separately and configure path)
+bin/
+
+# Sketch temporary files
+.sketch_tmp/
+
+# Package build artifacts
+celor.egg-info/
+
+# Local configuration
+config_local.py
