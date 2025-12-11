@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-service
+  labels:
+    app: api-service
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: api-service
+  template:
+    metadata:
+      labels:
+        app: api-service
+        env: production-us
+        team: frontend
+        tier: backend
+    spec:
+      containers:
+      - name: api
+        image: postgres:latest
+  priorityClassName: critical

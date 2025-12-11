@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-processor
+  labels:
+    app: data-processor
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: data-processor
+  template:
+    metadata:
+      labels:
+        app: data-processor
+        env: staging-us
+        team: frontend
+        tier: data
+    spec:
+      containers:
+      - name: web
+        image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/postgres:1.25.0
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 100m
+            memory: 128Mi
+        securityContext:
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL

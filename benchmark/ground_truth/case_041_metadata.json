@@ -1,0 +1,23 @@
+{
+  "case_id": "041",
+  "violation_types": [
+    "ecr_policy",
+    "missing_security",
+    "policy",
+    "security"
+  ],
+  "violation_count": 3,
+  "complexity": "hard",
+  "expected_fixes": [
+    {
+      "type": "EnsureImageVersion",
+      "container": "web"
+    },
+    {
+      "type": "EnsureSecurityBaseline",
+      "container": "web"
+    }
+  ],
+  "search_space_size": 6,
+  "difficulty": "hard"
+}

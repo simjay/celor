@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: queue-worker
+  labels:
+    app: queue-worker
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: queue-worker
+  template:
+    metadata:
+      labels:
+        app: queue-worker
+        team: frontend
+        tier: data
+    spec:
+      containers:
+      - name: worker
+        image: python:latest
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 100m
+            memory: 128Mi

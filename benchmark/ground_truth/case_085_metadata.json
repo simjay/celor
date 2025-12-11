@@ -1,0 +1,30 @@
+{
+  "case_id": "085",
+  "violation_types": [
+    "ecr_policy",
+    "missing_resources",
+    "missing_security",
+    "policy",
+    "resource",
+    "security"
+  ],
+  "violation_count": 4,
+  "complexity": "very_hard",
+  "expected_fixes": [
+    {
+      "type": "EnsureImageVersion",
+      "container": "web"
+    },
+    {
+      "type": "EnsureSecurityBaseline",
+      "container": "web"
+    },
+    {
+      "type": "EnsureResourceProfile",
+      "container": "web",
+      "profile": "medium"
+    }
+  ],
+  "search_space_size": 18,
+  "difficulty": "very_hard"
+}

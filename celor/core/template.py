@@ -26,7 +26,7 @@ class HoleRef:
     with concrete values during instantiation.
     
     Example:
-        HoleRef("env") represents the ?env hole that could be "staging" or "prod"
+        HoleRef("env") represents the ?env hole that could be "staging-us" or "production-us"
         HoleRef("replicas") represents the ?replicas hole that could be 2, 3, 4, or 5
     
     Attributes:
@@ -64,7 +64,7 @@ HoleSpace = Dict[str, Set[Any]]
 Example::
 
     {
-        "env": {"staging", "prod"},
+        "env": {"staging-us", "production-us"},
         "version": {"v1", "v2", "v3"},
         "profile": {"small", "medium", "large"}
     }
@@ -75,7 +75,7 @@ CandidateAssignments = Dict[str, Any]
 
 Example::
 
-    {"env": "prod", "version": "v2", "profile": "medium"}
+    {"env": "production-us", "version": "v2", "profile": "medium"}
 """
 
 
@@ -98,10 +98,10 @@ def instantiate(template: PatchTemplate, assignment: CandidateAssignments) -> Pa
         ...     PatchOp("EnsureLabel", {"key": "env", "value": HoleRef("env")}),
         ...     PatchOp("EnsureReplicas", {"replicas": HoleRef("replicas")})
         ... ])
-        >>> assignment = {"env": "prod", "replicas": 3}
+        >>> assignment = {"env": "production-us", "replicas": 3}
         >>> patch = instantiate(template, assignment)
         >>> patch.ops[0].args["value"]
-        'prod'
+        'production-us'
         >>> patch.ops[1].args["replicas"]
         3
     """
@@ -143,8 +143,8 @@ def serialize_value(value: Any) -> Any:
     Example:
         >>> serialize_value(HoleRef("env"))
         {'$hole': 'env'}
-        >>> serialize_value("prod")
-        'prod'
+        >>> serialize_value("production-us")
+        'production-us'
         >>> serialize_value(3)
         3
     """
@@ -168,8 +168,8 @@ def deserialize_value(value: Any) -> Any:
     Example:
         >>> deserialize_value({'$hole': 'env'})
         HoleRef(name='env')
-        >>> deserialize_value("prod")
-        'prod'
+        >>> deserialize_value("production-us")
+        'production-us'
         >>> deserialize_value(3)
         3
     """

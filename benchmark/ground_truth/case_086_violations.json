@@ -1,0 +1,56 @@
+[
+  {
+    "id": "policy.IMAGE_NOT_FROM_ECR",
+    "message": "Image must come from AWS ECR, got node:latest",
+    "severity": "error",
+    "path": [
+      "case_086.yaml",
+      "spec",
+      "template",
+      "spec",
+      "containers",
+      "image"
+    ]
+  },
+  {
+    "id": "security.NO_RUN_AS_NON_ROOT.web",
+    "message": "Container web must set runAsNonRoot=true",
+    "severity": "error",
+    "path": [
+      "case_086.yaml",
+      "spec",
+      "template",
+      "spec",
+      "containers",
+      "web",
+      "securityContext"
+    ]
+  },
+  {
+    "id": "security.PRIVILEGE_ESCALATION.web",
+    "message": "Container web must set allowPrivilegeEscalation=false",
+    "severity": "error",
+    "path": [
+      "case_086.yaml",
+      "spec",
+      "template",
+      "spec",
+      "containers",
+      "web",
+      "securityContext"
+    ]
+  },
+  {
+    "id": "resource.MISSING_RESOURCES.web",
+    "message": "Container web must specify resources",
+    "severity": "error",
+    "path": [
+      "case_086.yaml",
+      "spec",
+      "template",
+      "spec",
+      "containers",
+      "web"
+    ]
+  }
+]

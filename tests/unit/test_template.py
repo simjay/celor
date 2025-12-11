@@ -28,7 +28,7 @@ class TestHoleRef:
         """Test that HoleRef is immutable (frozen)."""
         hole = HoleRef("env")
         with pytest.raises(AttributeError):
-            hole.name = "prod"  # type: ignore
+            hole.name = "production-us"  # type: ignore
 
     def test_hole_ref_equality(self):
         """Test HoleRef equality."""
@@ -81,13 +81,13 @@ class TestInstantiate:
         template = PatchTemplate(ops=[
             PatchOp("EnsureLabel", {"key": "env", "value": HoleRef("env")})
         ])
-        assignment = {"env": "prod"}
+        assignment = {"env": "production-us"}
         
         patch = instantiate(template, assignment)
         
         assert isinstance(patch, Patch)
         assert len(patch.ops) == 1
-        assert patch.ops[0].args["value"] == "prod"
+        assert patch.ops[0].args["value"] == "production-us"
 
     def test_instantiate_multiple_holes(self):
         """Test instantiating template with multiple holes."""
@@ -97,7 +97,7 @@ class TestInstantiate:
             PatchOp("EnsureResourceProfile", {"profile": HoleRef("profile")})
         ])
         assignment = {
-            "env": "prod",
+            "env": "production-us",
             "replicas": 3,
             "profile": "medium"
         }
@@ -105,7 +105,7 @@ class TestInstantiate:
         patch = instantiate(template, assignment)
         
         assert len(patch.ops) == 3
-        assert patch.ops[0].args["value"] == "prod"
+        assert patch.ops[0].args["value"] == "production-us"
         assert patch.ops[1].args["replicas"] == 3
         assert patch.ops[2].args["profile"] == "medium"
 
@@ -118,13 +118,13 @@ class TestInstantiate:
                 "value": HoleRef("env")
             })
         ])
-        assignment = {"env": "staging"}
+        assignment = {"env": "staging-us"}
         
         patch = instantiate(template, assignment)
         
         assert patch.ops[0].args["scope"] == "podTemplate"
         assert patch.ops[0].args["key"] == "env"
-        assert patch.ops[0].args["value"] == "staging"
+        assert patch.ops[0].args["value"] == "staging-us"
 
     def test_instantiate_nested_holes(self):
         """Test that nested structures with holes work."""
@@ -165,7 +165,7 @@ class TestSerialization:
 
     def test_serialize_regular_values(self):
         """Test that non-HoleRef values pass through."""
-        assert serialize_value("prod") == "prod"
+        assert serialize_value("production-us") == "production-us"
         assert serialize_value(3) == 3
         assert serialize_value(["a", "b"]) == ["a", "b"]
         assert serialize_value({"key": "value"}) == {"key": "value"}
@@ -180,7 +180,7 @@ class TestSerialization:
 
     def test_deserialize_regular_values(self):
         """Test that non-hole dicts pass through."""
-        assert deserialize_value("prod") == "prod"
+        assert deserialize_value("production-us") == "production-us"
         assert deserialize_value(3) == 3
         assert deserialize_value({"key": "value"}) == {"key": "value"}
 
@@ -268,19 +268,19 @@ class TestIntegration:
         
         # Define hole space
         hole_space: HoleSpace = {
-            "env": {"staging", "prod"},
+            "env": {"staging-us", "production-us"},
             "replicas": {2, 3, 4}
         }
         
         # Try one candidate
-        candidate: CandidateAssignments = {"env": "prod", "replicas": 3}
+        candidate: CandidateAssignments = {"env": "production-us", "replicas": 3}
         
         # Instantiate
         patch = instantiate(template, candidate)
         
         # Verify result
         assert isinstance(patch, Patch)
-        assert patch.ops[0].args["value"] == "prod"
+        assert patch.ops[0].args["value"] == "production-us"
         assert patch.ops[1].args["replicas"] == 3
         
         # No more holes

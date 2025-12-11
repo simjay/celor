@@ -21,13 +21,13 @@ spec:
     metadata:
       labels:
         app: payments-api
-        env: prod
+        env: production-us
         team: payments
         tier: backend
     spec:
       containers:
       - name: payments-api
-        image: payments-api:prod-1.2.3
+        image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/payments-api:prod-1.2.3
         securityContext:
           runAsNonRoot: true
           allowPrivilegeEscalation: false
@@ -53,7 +53,7 @@ spec:
     metadata:
       labels:
         app: payments-api
-        env: prod
+        env: production-us
     spec:
       containers:
       - name: payments-api
@@ -94,10 +94,10 @@ class TestPolicyOracle:
         assert isinstance(v.evidence, dict)
         assert "forbid_tuple" in v.evidence
         assert v.evidence["forbid_tuple"]["holes"] == ["env", "replicas"]
-        assert v.evidence["forbid_tuple"]["values"] == ["prod", 2]
+        assert v.evidence["forbid_tuple"]["values"] == ["production-us", 2]
 
     def test_env_prod_small_profile_fails(self):
-        """Test that env=prod with small profile fails."""
+        """Test that env=production-us with small profile fails."""
         artifact = K8sArtifact(files={"deployment.yaml": NON_COMPLIANT_DEPLOYMENT})
         oracle = PolicyOracle()
         
@@ -111,10 +111,10 @@ class TestPolicyOracle:
         v = profile_violations[0]
         assert "forbid_tuple" in v.evidence
         assert v.evidence["forbid_tuple"]["holes"] == ["env", "profile"]
-        assert v.evidence["forbid_tuple"]["values"] == ["prod", "small"]
+        assert v.evidence["forbid_tuple"]["values"] == ["production-us", "small"]
 
     def test_env_prod_latest_tag_fails(self):
-        """Test that env=prod with :latest tag fails."""
+        """Test that env=production-us with :latest tag fails."""
         artifact = K8sArtifact(files={"deployment.yaml": NON_COMPLIANT_DEPLOYMENT})
         oracle = PolicyOracle()
         

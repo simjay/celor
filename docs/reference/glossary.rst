@@ -39,12 +39,12 @@ A reference to a hole in PatchTemplate. Example: ``HoleRef("replicas")`` in ``Pa
 HoleSpace
 ---------
 
-The domain of possible values for each hole. Example: ``{"replicas": {3, 4, 5}, "env": {"prod"}}``.
+The domain of possible values for each hole. Example: ``{"replicas": {3, 4, 5}, "env": {"production-us"}}``.
 
 CandidateAssignments
 ---------------------
 
-A specific choice of values for all holes. Example: ``{"replicas": 3, "env": "prod"}``.
+A specific choice of values for all holes. Example: ``{"replicas": 3, "env": "production-us"}``.
 
 PatchTemplate
 -------------

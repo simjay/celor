@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-processor
+  labels:
+    app: data-processor
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: data-processor
+  template:
+    metadata:
+      labels:
+        app: data-processor
+        env: dev-us
+        team: payments
+        tier: backend
+    spec:
+      containers:
+      - name: service
+        image: python:latest
+        securityContext:
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL

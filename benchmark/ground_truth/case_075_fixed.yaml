@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker-pool
+  labels:
+    app: worker-pool
+spec:
+  replicas: 6
+  selector:
+    matchLabels:
+      app: worker-pool
+  template:
+    metadata:
+      labels:
+        app: worker-pool
+        team: backend
+        tier: data
+        env: production-us
+    spec:
+      containers:
+      - name: service
+        image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/redis:1.25.0
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 100m
+            memory: 128Mi
+        securityContext:
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+  priorityClassName: critical

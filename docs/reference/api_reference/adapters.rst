@@ -65,7 +65,7 @@ celor.k8s.patch_dsl
    
    patch = Patch(ops=[
        PatchOp("EnsureReplicas", {"replicas": 3}),
-       PatchOp("EnsureLabel", {"key": "env", "value": "prod"})
+       PatchOp("EnsureLabel", {"key": "env", "value": "production-us"})
    ])
    
    repaired_files = apply_k8s_patch(original_files, patch)
@@ -176,7 +176,7 @@ Using PatchDSL Directly
        PatchOp("EnsureLabel", {
            "scope": "podTemplate",
            "key": "env",
-           "value": "prod"
+           "value": "production-us"
        })
    ])
    

@@ -18,7 +18,7 @@ import logging
 from typing import Dict, List, Literal, Optional, Tuple
 
 from celor.core.schema.artifact import Artifact
-from celor.core.schema.patch_dsl import PatchOp
+from celor.core.schema.patch_dsl import Patch, PatchOp
 from celor.core.schema.violation import Violation
 from celor.core.template import HoleSpace, PatchTemplate, deserialize_template
 
@@ -114,7 +114,8 @@ class LLMAdapter:
         self,
         artifact: Artifact,
         violations: List[Violation],
-        domain: DomainType = "k8s"
+        domain: DomainType = "k8s",
+        previous_feedback: Optional[str] = None
     ) -> Tuple[PatchTemplate, HoleSpace]:
         """Generate PatchTemplate and HoleSpace using LLM.
         
@@ -142,7 +143,7 @@ class LLMAdapter:
         logger.info(f"Generating template for domain={domain}")
         
         # Step 1: Build domain-specific prompt
-        prompt = self._build_prompt(artifact, violations, domain)
+        prompt = self._build_prompt(artifact, violations, domain, previous_feedback)
         logger.debug(f"Built prompt ({len(prompt)} chars)")
         
         # Step 2: Call LLM (vendor-agnostic)
@@ -199,7 +200,8 @@ class LLMAdapter:
         self,
         artifact: Artifact,
         violations: List[Violation],
-        domain: DomainType
+        domain: DomainType,
+        previous_feedback: Optional[str] = None
     ) -> str:
         """Route to domain-specific prompt builder.
         
@@ -210,6 +212,7 @@ class LLMAdapter:
             artifact: Artifact to repair
             violations: Oracle failures
             domain: Domain identifier
+            previous_feedback: Optional feedback from previous repair attempts
             
         Returns:
             Prompt string for LLM
@@ -219,7 +222,7 @@ class LLMAdapter:
         """
         if domain == "k8s":
             from celor.llm.prompts.k8s import build_k8s_prompt
-            return build_k8s_prompt(artifact, violations)
+            return build_k8s_prompt(artifact, violations, previous_feedback)
         elif domain == "python":
             from celor.llm.prompts.python import build_python_prompt
             return build_python_prompt(artifact, violations)
@@ -241,7 +244,7 @@ class LLMAdapter:
             ]
           },
           "hole_space": {
-            "env": ["staging", "prod"],
+            "env": ["staging-us", "production-us"],
             "replicas": [3, 4, 5],
             ...
           }
@@ -275,3 +278,109 @@ class LLMAdapter:
         }
         
         return template, hole_space
+    
+    def propose_concrete_patch(
+        self,
+        artifact: Artifact,
+        violations: List[Violation],
+        domain: DomainType = "k8s",
+        previous_feedback: Optional[str] = None
+    ) -> Patch:
+        """Generate a concrete Patch (no holes) using LLM for pure-LLM baseline.
+        
+        This is for pure-LLM approach where LLM must provide complete,
+        concrete values without any synthesis.
+        
+        Args:
+            artifact: The artifact to repair
+            violations: Oracle failures to address
+            domain: Which domain (determines prompt builder)
+            previous_feedback: Optional feedback from previous attempts
+            
+        Returns:
+            Concrete Patch with all values filled (no holes)
+        """
+        logger.info(f"Generating concrete patch for domain={domain}")
+        
+        # Build prompt for concrete patch
+        prompt = self._build_concrete_patch_prompt(artifact, violations, domain, previous_feedback)
+        logger.debug(f"Built concrete patch prompt ({len(prompt)} chars)")
+        
+        # Call LLM
+        try:
+            model_name = getattr(self.client, 'model', None) or self.client_config.get('model', 'gpt-4')
+            supports_json_mode = any(x in model_name.lower() for x in ['turbo', 'gpt-4o', 'gpt-3.5-turbo', 'o1'])
+            
+            if not supports_json_mode:
+                prompt = prompt + "\n\nIMPORTANT: Return ONLY valid JSON (no markdown, no code blocks, no explanations)."
+            
+            chat_kwargs = {
+                "messages": [{
+                    "role": "system",
+                    "content": "You are an expert in program synthesis and repair."
+                }, {
+                    "role": "user",
+                    "content": prompt
+                }]
+            }
+            
+            if supports_json_mode:
+                chat_kwargs["response_format"] = {"type": "json_object"}
+            
+            response = self.client.chat(**chat_kwargs)
+            logger.debug("Received LLM response")
+            
+            if not supports_json_mode:
+                import re
+                json_match = re.search(r'\{[\s\S]*\}', response)
+                if json_match:
+                    response = json_match.group(0)
+        except Exception as e:
+            logger.error(f"LLM call failed: {e}")
+            raise
+        
+        # Parse response into concrete Patch
+        try:
+            patch = self._parse_concrete_patch_response(response)
+            logger.info(f"Parsed concrete patch with {len(patch.ops)} operations")
+            return patch
+        except Exception as e:
+            logger.error(f"Failed to parse LLM response: {e}")
+            logger.debug(f"Response was: {response[:500]}...")
+            raise
+    
+    def _build_concrete_patch_prompt(
+        self,
+        artifact: Artifact,
+        violations: List[Violation],
+        domain: DomainType,
+        previous_feedback: Optional[str] = None
+    ) -> str:
+        """Build prompt for concrete patch generation (no holes)."""
+        if domain == "k8s":
+            from celor.llm.prompts.k8s import build_k8s_concrete_patch_prompt
+            return build_k8s_concrete_patch_prompt(artifact, violations, previous_feedback)
+        else:
+            raise ValueError(f"Concrete patch generation not supported for domain: {domain}")
+    
+    def _parse_concrete_patch_response(self, response: str) -> Patch:
+        """Parse LLM JSON response into concrete Patch (no holes).
+        
+        Expected format: {"patch": {"ops": [{"op": "...", "args": {...}}, ...]}}
+        """
+        data = json.loads(response)
+        
+        if "patch" not in data:
+            raise KeyError("Response missing 'patch' field")
+        
+        patch_data = data["patch"]
+        if "ops" not in patch_data:
+            raise KeyError("Patch missing 'ops' field")
+        
+        ops = []
+        for op_data in patch_data["ops"]:
+            if "op" not in op_data or "args" not in op_data:
+                raise KeyError(f"Operation missing 'op' or 'args': {op_data}")
+            ops.append(PatchOp(op=op_data["op"], args=op_data["args"]))
+        
+        return Patch(ops=ops)

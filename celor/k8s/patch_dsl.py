@@ -9,6 +9,7 @@ from typing import Dict, List, Optional
 from ruamel.yaml import YAML
 
 from celor.core.schema.patch_dsl import Patch, PatchOp
+from celor.k8s.utils import get_containers
 
 
 def _create_yaml_instance() -> YAML:
@@ -171,7 +172,7 @@ def _apply_ensure_image_version(files: Dict[str, str], args: dict) -> Dict[str, 
             continue
         
         # Find and update container image
-        containers = manifest.get("spec", {}).get("template", {}).get("spec", {}).get("containers", [])
+        containers = get_containers(manifest)
         
         for container in containers:
             if container.get("name") == container_name:
@@ -222,7 +223,7 @@ def _apply_ensure_security_baseline(files: Dict[str, str], args: dict) -> Dict[s
             continue
         
         # Find and update container securityContext
-        containers = manifest.get("spec", {}).get("template", {}).get("spec", {}).get("containers", [])
+        containers = get_containers(manifest)
         
         for container in containers:
             if container.get("name") == container_name:
@@ -274,7 +275,7 @@ def _apply_ensure_resource_profile(files: Dict[str, str], args: dict) -> Dict[st
             continue
         
         # Find and update container resources
-        containers = manifest.get("spec", {}).get("template", {}).get("spec", {}).get("containers", [])
+        containers = get_containers(manifest)
         
         for container in containers:
             if container.get("name") == container_name:

@@ -46,7 +46,7 @@ The LLM receives a prompt describing the manifest and violations, then generates
        ]
      },
      "hole_space": {
-       "env": ["staging", "prod"],
+       "env": ["staging-us", "production-us"],
        "replicas": [3, 4, 5]
      }
    }
@@ -75,7 +75,7 @@ Example
 **Input**: Broken manifest with violations:
   - Replicas too low (needs 3-5)
   - Missing labels (team, tier)
-  - Image tag is :latest (not allowed in prod)
+  - Image tag is :latest (not allowed in production-us)
 
 **Output**: PatchTemplate with holes:
 

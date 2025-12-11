@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker-pool
+  labels:
+    app: worker-pool
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: worker-pool
+  template:
+    metadata:
+      labels:
+        app: worker-pool
+        env: production-us
+        tier: data
+    spec:
+      containers:
+      - name: web
+        image: postgres:latest
+        securityContext:
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+  priorityClassName: critical

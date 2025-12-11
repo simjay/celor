@@ -61,17 +61,17 @@ class TestExtractConstraints:
 
     def test_extract_forbid_tuple(self):
         """Test extracting forbidden_tuple constraint."""
-        candidate = {"env": "prod", "replicas": 2}
+        candidate = {"env": "production-us", "replicas": 2}
         violations = [
             Violation(
                 id="test",
-                message="prod + 2 replicas forbidden",
+                message="production-us + 2 replicas forbidden",
                 path=[],
                 severity="error",
                 evidence={
                     "forbid_tuple": {
                         "holes": ["env", "replicas"],
-                        "values": ["prod", 2]
+                        "values": ["production-us", 2]
                     }
                 }
             )
@@ -82,7 +82,7 @@ class TestExtractConstraints:
         assert len(constraints) == 1
         assert constraints[0].type == "forbidden_tuple"
         assert constraints[0].data["holes"] == ["env", "replicas"]
-        assert constraints[0].data["values"] == ["prod", 2]
+        assert constraints[0].data["values"] == ["production-us", 2]
 
     def test_extract_multiple_constraints(self):
         """Test extracting multiple constraints from multiple violations."""

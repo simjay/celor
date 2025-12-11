@@ -20,12 +20,12 @@ class TestConstraint:
         """Test forbidden_tuple constraint creation."""
         c = Constraint("forbidden_tuple", {
             "holes": ["env", "replicas"],
-            "values": ["prod", 2]
+            "values": ["production-us", 2]
         })
         
         assert c.type == "forbidden_tuple"
         assert c.data["holes"] == ["env", "replicas"]
-        assert c.data["values"] == ["prod", 2]
+        assert c.data["values"] == ["production-us", 2]
 
     def test_constraint_serialization(self):
         """Test constraint serialization roundtrip."""
@@ -48,9 +48,9 @@ class TestConstraint:
         
         c2 = Constraint("forbidden_tuple", {
             "holes": ["env", "replicas"],
-            "values": ["prod", 2]
+            "values": ["production-us", 2]
         })
-        assert "env=prod" in repr(c2)
+        assert "env=production-us" in repr(c2)
         assert "replicas=2" in repr(c2)
 
 
@@ -60,7 +60,7 @@ class TestCandidateGenerator:
     def test_simple_enumeration_2x2(self):
         """Test enumeration of simple 2×2 hole space."""
         hole_space = {
-            "env": {"dev", "prod"},
+            "env": {"dev-us", "production-us"},
             "replicas": {2, 3}
         }
         gen = CandidateGenerator(hole_space, [])
@@ -71,49 +71,51 @@ class TestCandidateGenerator:
         assert len(candidates) == 4
         
         # Check all combinations present
-        assert {"env": "dev", "replicas": 2} in candidates
-        assert {"env": "dev", "replicas": 3} in candidates
-        assert {"env": "prod", "replicas": 2} in candidates
-        assert {"env": "prod", "replicas": 3} in candidates
+        assert {"env": "dev-us", "replicas": 2} in candidates
+        assert {"env": "dev-us", "replicas": 3} in candidates
+        assert {"env": "production-us", "replicas": 2} in candidates
+        assert {"env": "production-us", "replicas": 3} in candidates
 
     def test_forbidden_value_constraint(self):
         """Test that forbidden_value constraint skips values."""
         hole_space = {
-            "env": {"dev", "prod"},
+            "env": {"dev-us", "production-us"},
             "replicas": {2, 3}
         }
         constraints = [
-            Constraint("forbidden_value", {"hole": "env", "value": "dev"})
+            Constraint("forbidden_value", {"hole": "env", "value": "dev-us"})
         ]
         gen = CandidateGenerator(hole_space, constraints)
         
         candidates = list(gen)
         
-        # Should skip all candidates with env=dev
+        # Should skip all candidates with env=dev-us
         assert len(candidates) == 2
         for c in candidates:
-            assert c["env"] == "prod"
+            assert c["env"] == "production-us"
 
     def test_forbidden_tuple_constraint(self):
         """Test that forbidden_tuple constraint skips specific combinations."""
         hole_space = {
-            "env": {"dev", "prod"},
+            "env": {"dev-us", "production-us"},
             "replicas": {2, 3}
         }
         constraints = [
             Constraint("forbidden_tuple", {
                 "holes": ["env", "replicas"],
-                "values": ["prod", 2]
+                "values": ["production-us", 2]
             })
         ]
         gen = CandidateGenerator(hole_space, constraints)
         
         candidates = list(gen)
         
-        # Should skip env=prod, replicas=2
+        # Should skip env=production-us, replicas=2
         assert len(candidates) == 3
-        assert {"env": "prod", "replicas": 2} not in candidates
-        assert {"env": "prod", "replicas": 3} in candidates
+        assert {"env": "production-us", "replicas": 2} not in candidates
+        assert {"env": "production-us", "replicas": 3} in candidates
+        assert {"env": "dev-us", "replicas": 2} in candidates
+        assert {"env": "dev-us", "replicas": 3} in candidates
 
     def test_multiple_constraints(self):
         """Test multiple constraints together."""
@@ -166,14 +168,14 @@ class TestCandidateGenerator:
 
     def test_single_hole(self):
         """Test with single hole."""
-        hole_space = {"env": {"dev", "prod", "staging"}}
+        hole_space = {"env": {"dev-us", "production-us", "staging-us"}}
         gen = CandidateGenerator(hole_space, [])
         
         candidates = list(gen)
         
         assert len(candidates) == 3
         envs = {c["env"] for c in candidates}
-        assert envs == {"dev", "prod", "staging"}
+        assert envs == {"dev-us", "production-us", "staging-us"}
 
     def test_estimate_size(self):
         """Test size estimation."""

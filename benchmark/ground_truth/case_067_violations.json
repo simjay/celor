@@ -1,0 +1,28 @@
+[
+  {
+    "id": "policy.IMAGE_NOT_FROM_ECR",
+    "message": "Image must come from AWS ECR, got python:3.10",
+    "severity": "error",
+    "path": [
+      "case_067.yaml",
+      "spec",
+      "template",
+      "spec",
+      "containers",
+      "image"
+    ]
+  },
+  {
+    "id": "resource.MISSING_RESOURCES.worker",
+    "message": "Container worker must specify resources",
+    "severity": "error",
+    "path": [
+      "case_067.yaml",
+      "spec",
+      "template",
+      "spec",
+      "containers",
+      "worker"
+    ]
+  }
+]

@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-processor
+  labels:
+    app: data-processor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: data-processor
+  template:
+    metadata:
+      labels:
+        app: data-processor
+        env: production-us
+        team: data
+        tier: backend
+    spec:
+      containers:
+      - name: web
+        image: postgres:latest
+  priorityClassName: critical

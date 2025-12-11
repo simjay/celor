@@ -13,7 +13,7 @@ from celor.core.cegis.loop import repair
 from celor.core.cegis.synthesizer import SynthConfig
 from celor.k8s.artifact import K8sArtifact
 from celor.k8s.examples import LLM_EDITED_DEPLOYMENT, payments_api_template_and_holes
-from celor.k8s.oracles import PolicyOracle, ResourceOracle, SecurityOracle
+from celor.k8s.oracle_config import get_oracles_for_scenario
 
 logger = logging.getLogger(__name__)
 
@@ -65,7 +65,8 @@ def demo_repair(
     if verbose:
         print("[2] Setting up oracles and Fix Bank...")
     
-    oracles = [PolicyOracle(), SecurityOracle(), ResourceOracle()]
+    # Use unified oracle configuration for full demo
+    oracles = get_oracles_for_scenario("full_demo", include_external=False)
     
     # Setup Fix Bank if path provided
     fixbank = None

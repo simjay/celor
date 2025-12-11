@@ -32,9 +32,9 @@ forbidden_tuple
 
 A combination of hole values is not allowed together.
 
-**Example**: ``Constraint(type="forbidden_tuple", data={"holes": ["env", "replicas"], "values": ["prod", 2]})``
+**Example**: ``Constraint(type="forbidden_tuple", data={"holes": ["env", "replicas"], "values": ["production-us", 2]})``
 
-**Meaning**: ``env=prod AND replicas=2`` together violate policy
+**Meaning**: ``env=production-us AND replicas=2`` together violate policy
 
 **Usage**: When a specific combination of values fails, but each value individually might be valid.
 
@@ -56,9 +56,9 @@ Constraints are extracted from violation evidence provided by oracles.
    # Violation from PolicyOracle
    violation = Violation(
        id="policy.ENV_PROD_REPLICA_COUNT",
-       message="env=prod requires replicas in [3,5], got 2",
+       message="env=production-us requires replicas in [3,5], got 2",
        evidence=ViolationEvidence(
-           constraint_hints={"forbid_tuple": [("env", "prod"), ("replicas", 2)]}
+           constraint_hints={"forbid_tuple": [("env", "production-us"), ("replicas", 2)]}
        )
    )
    
@@ -67,7 +67,7 @@ Constraints are extracted from violation evidence provided by oracles.
        type="forbidden_tuple",
        data={
            "holes": ["env", "replicas"],
-           "values": ["prod", 2]
+           "values": ["production-us", 2]
        }
    )
 
@@ -87,19 +87,19 @@ Constraints significantly reduce the search space by skipping invalid candidates
 .. code-block:: python
 
    hole_space = {
-       "env": {"staging", "prod"},
+       "env": {"staging-us", "production-us"},
        "replicas": {2, 3, 4, 5}
    }
    constraints = [
-       Constraint(type="forbidden_tuple", data={"holes": ["env", "replicas"], "values": ["prod", 2]})
+       Constraint(type="forbidden_tuple", data={"holes": ["env", "replicas"], "values": ["production-us", 2]})
    ]
    
    # Without constraints: 8 candidates (2 × 4)
-   # With constraints: 7 candidates (prune {"env": "prod", "replicas": 2})
+   # With constraints: 7 candidates (prune {"env": "production-us", "replicas": 2})
    
    generator = CandidateGenerator(hole_space, constraints)
-   # Enumerates: staging+2, staging+3, staging+4, staging+5, prod+3, prod+4, prod+5
-   # Skips: prod+2 (violates constraint)
+   # Enumerates: staging-us+2, staging-us+3, staging-us+4, staging-us+5, production-us+3, production-us+4, production-us+5
+   # Skips: production-us+2 (violates constraint)
 
 Constraint Effectiveness
 ------------------------

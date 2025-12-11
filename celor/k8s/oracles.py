@@ -17,16 +17,19 @@ from ruamel.yaml import YAML
 from celor.core.schema.violation import Violation
 from celor.k8s.artifact import K8sArtifact
 from celor.k8s.patch_dsl import RESOURCE_PROFILES
+from celor.k8s.utils import get_pod_template_label, get_containers
 
 
 class PolicyOracle:
     """Custom policy oracle for org-specific K8s rules.
     
     Implements policies like:
-    - env=prod requires replicas in [3,5]
-    - env=prod requires profile in {medium, large}
+    - env=production-us requires replicas in [3,5]
+    - env=production-us requires profile in {medium, large}
     - Image tags must match patterns
     - Required labels must be present
+    
+    Environment values must exactly match company standard: "production-us", "staging-us", "dev-us"
     
     Returns Violations with constraint hints in evidence field for synthesis.
     """
@@ -61,9 +64,9 @@ class PolicyOracle:
                 continue
             
             # Extract values for policy checks
-            env = self._get_label(manifest, "env")
-            team = self._get_label(manifest, "team")
-            tier = self._get_label(manifest, "tier")
+            env = get_pod_template_label(manifest, "env") or ""
+            team = get_pod_template_label(manifest, "team") or ""
+            tier = get_pod_template_label(manifest, "tier") or ""
             replicas = manifest.get("spec", {}).get("replicas")
             priority_class = manifest.get("spec", {}).get("priorityClassName")
             
@@ -71,8 +74,13 @@ class PolicyOracle:
             profile = self._extract_profile(manifest)
             
             # Extract image tag and full image
-            image_full = self._extract_image(manifest)
-            image_tag = self._extract_image_tag(manifest)
+            containers = get_containers(manifest)
+            if containers:
+                image_full = containers[0].get("image", "")
+                image_tag = image_full.split(":")[-1] if ":" in image_full else ""
+            else:
+                image_full = ""
+                image_tag = ""
             
             # Policy: Images must come from AWS ECR
             if image_full:
@@ -80,11 +88,11 @@ class PolicyOracle:
                 if ecr_violation:
                     violations.append(ecr_violation)
             
-            # Policy: env=prod requires replicas in [3, 5]
-            if env == "prod" and replicas is not None and replicas not in [3, 4, 5]:
+            # Policy: env=production-us requires replicas in [3, 5]
+            if env == "production-us" and replicas is not None and replicas not in [3, 4, 5]:
                 violations.append(Violation(
                     id="policy.ENV_PROD_REPLICA_COUNT",
-                    message=f"env=prod requires replicas in [3,5], got {replicas}",
+                    message=f"env={env} (production) requires replicas in [3,5], got {replicas}",
                     path=[filepath, "spec", "replicas"],
                     severity="error",
                     evidence={
@@ -94,16 +102,16 @@ class PolicyOracle:
                         # Constraint hint for synthesizer
                         "forbid_tuple": {
                             "holes": ["env", "replicas"],
-                            "values": ["prod", replicas]
+                            "values": [env, replicas]
                         }
                     }
                 ))
             
-            # Policy: env=prod requires profile in {medium, large}
-            if env == "prod" and profile == "small":
+            # Policy: env=production-us requires profile in {medium, large}
+            if env == "production-us" and profile == "small":
                 violations.append(Violation(
                     id="policy.ENV_PROD_PROFILE_SMALL",
-                    message=f"env=prod requires profile in {{medium, large}}, got {profile}",
+                    message=f"env={env} (production) requires profile in {{medium, large}}, got {profile}",
                     path=[filepath, "spec", "template", "spec", "containers"],
                     severity="error",
                     evidence={
@@ -113,17 +121,17 @@ class PolicyOracle:
                         # Constraint hint
                         "forbid_tuple": {
                             "holes": ["env", "profile"],
-                            "values": ["prod", "small"]
+                            "values": [env, "small"]
                         }
                     }
                 ))
             
-            # Policy: env=prod requires proper image tag (not latest, not staging)
-            if env == "prod" and image_tag:
+            # Policy: env=production-us requires proper image tag (not latest, not staging)
+            if env == "production-us" and image_tag:
                 if image_tag == "latest" or "staging" in image_tag:
                     violations.append(Violation(
                         id="policy.ENV_PROD_IMAGE_TAG",
-                        message=f"env=prod requires prod-x.y.z tag pattern, got {image_tag}",
+                        message=f"env={env} (production) requires prod-x.y.z tag pattern, got {image_tag}",
                         path=[filepath, "spec", "template", "spec", "containers", "image"],
                         severity="error",
                         evidence={
@@ -133,24 +141,24 @@ class PolicyOracle:
                         }
                     ))
             
-            # Policy: env=prod requires certain labels
-            if env == "prod":
+            # Policy: env=production-us requires certain labels
+            if env == "production-us":
                 required_labels = ["env", "team", "tier"]
                 for label in required_labels:
-                    if not self._get_label(manifest, label):
+                    if not get_pod_template_label(manifest, label):
                         violations.append(Violation(
                             id=f"policy.MISSING_LABEL_{label.upper()}",
-                            message=f"env=prod requires label '{label}'",
+                            message=f"env={env} (production) requires label '{label}'",
                             path=[filepath, "spec", "template", "metadata", "labels"],
                             severity="error",
                             evidence={"missing_label": label}
                         ))
             
-            # Policy: env=prod requires priorityClassName
-            if env == "prod" and not priority_class:
+            # Policy: env=production-us requires priorityClassName
+            if env == "production-us" and not priority_class:
                 violations.append(Violation(
                     id="policy.MISSING_PRIORITY_CLASS",
-                    message="env=prod requires priorityClassName to be set",
+                    message=f"env={env} (production) requires priorityClassName to be set",
                     path=[filepath, "spec", "priorityClassName"],
                     severity="error",
                     evidence={"env": env}
@@ -158,20 +166,9 @@ class PolicyOracle:
         
         return violations
     
-    def _get_label(self, manifest: dict, key: str) -> str:
-        """Extract label value from pod template."""
-        return (manifest.get("spec", {})
-                .get("template", {})
-                .get("metadata", {})
-                .get("labels", {})
-                .get(key, ""))
-    
     def _extract_profile(self, manifest: dict) -> str:
         """Determine resource profile from CPU/memory values."""
-        containers = (manifest.get("spec", {})
-                      .get("template", {})
-                      .get("spec", {})
-                      .get("containers", []))
+        containers = get_containers(manifest)
         
         if not containers:
             return ""
@@ -197,31 +194,12 @@ class PolicyOracle:
         
         return "unknown"
     
-    def _extract_image(self, manifest: dict) -> str:
-        """Extract full image path from first container."""
-        containers = (manifest.get("spec", {})
-                      .get("template", {})
-                      .get("spec", {})
-                      .get("containers", []))
-        
-        if not containers:
-            return ""
-        
-        return containers[0].get("image", "")
-    
-    def _extract_image_tag(self, manifest: dict) -> str:
-        """Extract image tag from first container."""
-        image = self._extract_image(manifest)
-        if ":" in image:
-            return image.split(":")[-1]
-        return ""
-    
     def _check_ecr_policy(self, image: str, env: str, filepath: str) -> Optional[Violation]:
         """Check if image complies with AWS ECR policy.
         
         Policy requirements:
         1. Image must come from AWS ECR (format: <account>.dkr.ecr.<region>.amazonaws.com/<repo>:<tag>)
-        2. ECR repository must match environment (dev/staging/prod)
+        2. ECR repository must match environment (exact match: "production-us", "staging-us", or "dev-us")
         
         Args:
             image: Full image path
@@ -262,10 +240,12 @@ class PolicyOracle:
             tag = ""
         
         # Check environment match (if env is specified)
+        # Environment must exactly match company standard values
         if env:
-            # Check if repo path or tag contains environment
-            env_in_repo = env.lower() in repo_path.lower()
-            env_in_tag = env.lower() in tag.lower()
+            # Check if repo path or tag contains the exact environment value
+            # (case-sensitive to match exact env label values)
+            env_in_repo = env in repo_path
+            env_in_tag = env in tag
             
             if not (env_in_repo or env_in_tag):
                 return Violation(
@@ -305,29 +285,25 @@ class SchemaOracle:
                                    over kubectl (default: True)
         """
         self.use_kubernetes_validate = use_kubernetes_validate
-        self._k8s_validate_available = self._check_kubernetes_validate()
-        self._kubectl_available = self._check_kubectl()
-        self.logger = logging.getLogger(__name__)
-    
-    def _check_kubernetes_validate(self) -> bool:
-        """Check if kubernetes-validate library is available."""
+        # Check if kubernetes-validate library is available
         try:
             import kubernetes_validate
-            return True
+            self._k8s_validate_available = True
         except ImportError:
-            return False
+            self._k8s_validate_available = False
     
-    def _check_kubectl(self) -> bool:
-        """Check if kubectl is available."""
+        # Check if kubectl is available
         try:
             result = subprocess.run(
                 ["kubectl", "version", "--client"],
                 capture_output=True,
                 timeout=2
             )
-            return result.returncode == 0
+            self._kubectl_available = result.returncode == 0
         except (FileNotFoundError, subprocess.TimeoutExpired):
-            return False
+            self._kubectl_available = False
+        
+        self.logger = logging.getLogger(__name__)
 
     def __call__(self, artifact: K8sArtifact) -> List[Violation]:
         """Validate artifact against K8s schema.
@@ -454,10 +430,7 @@ class SecurityOracle:
             if manifest.get("kind") != "Deployment":
                 continue
             
-            containers = (manifest.get("spec", {})
-                         .get("template", {})
-                         .get("spec", {})
-                         .get("containers", []))
+            containers = get_containers(manifest)
             
             for container in containers:
                 sec_ctx = container.get("securityContext", {})
@@ -512,10 +485,7 @@ class ResourceOracle:
             if manifest.get("kind") != "Deployment":
                 continue
             
-            containers = (manifest.get("spec", {})
-                         .get("template", {})
-                         .get("spec", {})
-                         .get("containers", []))
+            containers = get_containers(manifest)
             
             for container in containers:
                 container_name = container.get("name", "unknown")
@@ -595,16 +565,13 @@ class CheckovPolicyOracle:
     ]
     
     def __init__(self):
-        self._checkov_available = self._check_checkov()
-        self.logger = logging.getLogger(__name__)
-    
-    def _check_checkov(self) -> bool:
-        """Check if Checkov is available."""
+        # Check if Checkov is available
         try:
             import checkov
-            return True
+            self._checkov_available = True
         except ImportError:
-            return False
+            self._checkov_available = False
+        self.logger = logging.getLogger(__name__)
     
     def __call__(self, artifact: K8sArtifact) -> List[Violation]:
         """Run Checkov policy checks with constraint hints.
@@ -726,16 +693,13 @@ class CheckovSecurityOracle:
     ]
     
     def __init__(self):
-        self._checkov_available = self._check_checkov()
-        self.logger = logging.getLogger(__name__)
-    
-    def _check_checkov(self) -> bool:
-        """Check if Checkov is available."""
+        # Check if Checkov is available
         try:
             import checkov
-            return True
+            self._checkov_available = True
         except ImportError:
-            return False
+            self._checkov_available = False
+        self.logger = logging.getLogger(__name__)
     
     def __call__(self, artifact: K8sArtifact) -> List[Violation]:
         """Run Checkov security checks only.

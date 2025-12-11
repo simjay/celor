@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-processor
+  labels:
+    app: data-processor
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: data-processor
+  template:
+    metadata:
+      labels:
+        app: data-processor
+        team: payments
+        tier: frontend
+    spec:
+      containers:
+      - name: api
+        image: python:latest
+  priorityClassName: critical

@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: queue-worker
+  labels:
+    app: queue-worker
+spec:
+  replicas: 6
+  selector:
+    matchLabels:
+      app: queue-worker
+  template:
+    metadata:
+      labels:
+        app: queue-worker
+        team: data
+        tier: frontend
+    spec:
+      containers:
+      - name: app
+        image: nginx:latest
+  priorityClassName: critical

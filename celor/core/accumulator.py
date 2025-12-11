@@ -60,7 +60,7 @@ class CounterexampleAccumulator:
             True if violation was added, False if it was already seen
         """
         # Create hash from violation evidence
-        cex_hash = self._hash_violation(violation)
+        cex_hash = hash_violation(violation)
 
         if cex_hash not in self._seen_hashes:
             self.accumulated.append(
@@ -111,9 +111,9 @@ class CounterexampleAccumulator:
         Returns:
             True if violation was found and marked, False otherwise
         """
-        cex_hash = self._hash_violation(violation)
+        cex_hash = hash_violation(violation)
         for acc in self.accumulated:
-            if self._hash_violation(acc.violation) == cex_hash:
+            if hash_violation(acc.violation) == cex_hash:
                 acc.satisfied = True
                 return True
         return False
@@ -132,13 +132,6 @@ class CounterexampleAccumulator:
             if self.mark_satisfied(v):
                 marked_count += 1
         return marked_count
-
-    def _hash_violation(self, violation: Violation) -> str:
-        """Create hash from violation evidence for deduplication.
-
-        Uses the module-level hash_violation function.
-        """
-        return hash_violation(violation)
 
     def count(self) -> int:
         """Get count of accumulated counterexamples (including satisfied ones).

@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: queue-worker
+  labels:
+    app: queue-worker
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: queue-worker
+  template:
+    metadata:
+      labels:
+        app: queue-worker
+        env: production-us
+        team: data
+        tier: data
+    spec:
+      containers:
+      - name: worker
+        image: redis:latest
+  priorityClassName: critical

@@ -163,7 +163,7 @@ class TestEndToEndRepair:
                     .get("labels", {})
                     .get("env"))
         
-        assert env_label == "prod", "Should preserve env=prod from user intent"
+        assert env_label == "production-us", "Should preserve env=production-us from user intent"
 
 
 class TestDemoFunction:

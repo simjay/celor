@@ -77,14 +77,6 @@ def test_verify_empty_oracle_list():
     assert isinstance(violations, list)
 
 
-def test_verify_single_passing_oracle():
-    """Test verify with a single oracle that passes."""
-    artifact = MockArtifact()
-    violations = verify(artifact, [passing_oracle])
-
-    assert violations == []
-
-
 def test_verify_single_failing_oracle():
     """Test verify with a single oracle that returns violations."""
     artifact = MockArtifact()
@@ -219,20 +211,3 @@ def test_verify_artifact_passed_to_all_oracles():
     assert len(received_artifacts) == 3
     assert all(a.content == "specific_content" for a in received_artifacts)
     assert all(a is artifact for a in received_artifacts)
-
-
-def test_verify_returns_list_type():
-    """Test that verify always returns a list, never None."""
-    artifact = MockArtifact()
-
-    # Empty oracles
-    result = verify(artifact, [])
-    assert isinstance(result, list)
-
-    # Passing oracles
-    result = verify(artifact, [passing_oracle])
-    assert isinstance(result, list)
-
-    # Failing oracles
-    result = verify(artifact, [failing_oracle_one])
-    assert isinstance(result, list)

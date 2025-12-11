@@ -21,14 +21,99 @@ from celor.llm.adapter import LLMAdapter
 logger = logging.getLogger(__name__)
 
 
+def _sanitize_k8s_hole_space(
+    artifact: Artifact,
+    template: PatchTemplate,
+    hole_space: HoleSpace
+) -> HoleSpace:
+    """Sanitize LLM-generated hole space to convert tags to full ECR paths.
+    
+    The LLM often generates tags like "prod-1.0.0" instead of full ECR paths.
+    This function converts them to full ECR paths like:
+    "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/node:prod-1.0.0"
+    
+    Args:
+        artifact: K8s artifact (to extract container name and current image)
+        template: PatchTemplate (to find which holes are for version)
+        hole_space: LLM-generated hole space
+        
+    Returns:
+        Sanitized hole space with full ECR paths
+    """
+    from ruamel.yaml import YAML
+    from celor.k8s.utils import get_containers, get_pod_template_label
+    
+    sanitized = dict(hole_space)
+    
+    # Extract container name and current image from artifact
+    container_name = None
+    current_image = None
+    env = None
+    
+    try:
+        yaml = YAML()
+        for filepath, content in artifact.files.items():
+            manifest = yaml.load(content)
+            if manifest.get("kind") == "Deployment":
+                containers = get_containers(manifest)
+                if containers:
+                    container_name = containers[0].get("name")
+                    current_image = containers[0].get("image", "")
+                env = get_pod_template_label(manifest, "env")
+                break
+    except Exception:
+        pass
+    
+    # Find version-related holes (holes used in EnsureImageVersion operations)
+    version_holes = set()
+    for op in template.ops:
+        if op.op == "EnsureImageVersion" and isinstance(op.args, dict):
+            version_hole = op.args.get("version")
+            if hasattr(version_hole, "name"):
+                version_holes.add(version_hole.name)
+    
+    # Sanitize version holes
+    for hole_name in version_holes:
+        if hole_name in sanitized:
+            values = sanitized[hole_name]
+            sanitized_values = set()
+            
+            for value in values:
+                # If value is already a full ECR path, keep it
+                if ".dkr.ecr." in str(value) or str(value).startswith(("http://", "https://")):
+                    sanitized_values.add(value)
+                else:
+                    # It's a tag - convert to full ECR path
+                    tag = str(value)
+                    
+                    # Extract image name from current image or use container name
+                    if current_image and ":" in current_image:
+                        image_name = current_image.split(":")[0].split("/")[-1]
+                    else:
+                        image_name = container_name or "app"
+                    
+                    # Generate ECR paths for each env in the hole space
+                    env_values = sanitized.get("env", {"production-us", "staging-us", "dev-us"})
+                    for env_val in env_values:
+                        ecr_path = f"123456789012.dkr.ecr.us-east-1.amazonaws.com/{env_val}/{image_name}:{tag}"
+                        sanitized_values.add(ecr_path)
+            
+            if sanitized_values:
+                sanitized[hole_name] = sanitized_values
+                logger.info(f"   Sanitized hole '{hole_name}': converted {len(values)} tags to {len(sanitized_values)} ECR paths")
+    
+    return sanitized
+
+
 def _determine_template_source(
     artifact: Artifact,
     violations: List[Violation],
     fixbank: Optional[FixBank],
     llm_adapter: Optional[LLMAdapter],
-    default_template_fn: Optional[Callable[[], Tuple[PatchTemplate, HoleSpace]]],
+    default_template_fn: Optional[Callable[..., Tuple[PatchTemplate, HoleSpace]]],
     provided_template: Optional[PatchTemplate],
-    provided_hole_space: Optional[HoleSpace]
+    provided_hole_space: Optional[HoleSpace],
+    skip_fixbank_lookup: bool = False
 ) -> Tuple[PatchTemplate, HoleSpace, Optional[List[Constraint]], bool, int]:
     """Determine template and hole space source based on priority.
     
@@ -52,8 +137,8 @@ def _determine_template_source(
     template: Optional[PatchTemplate] = None
     hole_space: Optional[HoleSpace] = None
     
-    # Priority 1: Check Fix Bank
-    if fixbank is not None:
+    # Priority 1: Check Fix Bank (skip if skip_fixbank_lookup=True)
+    if fixbank is not None and not skip_fixbank_lookup:
         signature = build_signature(artifact, violations)
         entry = fixbank.lookup(signature)
         if entry is not None:
@@ -79,17 +164,55 @@ def _determine_template_source(
                     artifact, violations, domain="k8s"
                 )
                 llm_calls = 1
-                logger.info(f"LLM generated template with {len(template.ops)} operations")
+                
+                # Post-process: Sanitize hole space to convert tags to full ECR paths
+                hole_space = _sanitize_k8s_hole_space(artifact, template, hole_space)
+                
+                logger.info(f"✅ LLM generated template with {len(template.ops)} operations")
+                logger.info(f"   Template operations:")
+                for i, op in enumerate(template.ops, 1):
+                    logger.info(f"     {i}. {op.op}: {op.args}")
+                logger.info(f"   Hole space: {len(hole_space)} holes")
+                total_candidates = 1
+                for hole, values in hole_space.items():
+                    size = len(values)
+                    total_candidates *= size
+                    logger.info(f"     - {hole}: {size} values")
+                logger.info(f"   Total candidate space (Cartesian product): {total_candidates}")
             except Exception as e:
-                logger.warning(f"LLM call failed: {e}")
+                logger.warning(f"❌ LLM call failed: {e}")
                 template = None
                 hole_space = None
     
     # Priority 3: Use default_template_fn
     if template is None or hole_space is None:
         if default_template_fn:
-            logger.info("Using default template function")
-            template, hole_space = default_template_fn()
+            logger.info("⚠️  Using default template function (LLM not available or failed)")
+            # Check if function accepts artifact parameter
+            import inspect
+            sig = inspect.signature(default_template_fn)
+            params = list(sig.parameters.keys())
+            
+            if 'artifact' in params:
+                template, hole_space = default_template_fn(artifact=artifact)
+            elif len(params) > 0 and params[0] != 'context':
+                # Try passing artifact as first positional arg
+                template, hole_space = default_template_fn(artifact)
+            else:
+                # Old signature - no artifact parameter
+                template, hole_space = default_template_fn()
+            
+            logger.info(f"   Default template: {len(template.ops)} operations")
+            logger.info(f"   Template operations:")
+            for i, op in enumerate(template.ops, 1):
+                logger.info(f"     {i}. {op.op}: {op.args}")
+            logger.info(f"   Hole space: {len(hole_space)} holes")
+            total_candidates = 1
+            for hole, values in hole_space.items():
+                size = len(values)
+                total_candidates *= size
+                logger.info(f"     - {hole}: {size} values")
+            logger.info(f"   Total candidate space (Cartesian product): {total_candidates}")
         elif provided_template is not None and provided_hole_space is not None:
             template = provided_template
             hole_space = provided_hole_space
@@ -112,7 +235,8 @@ def repair_artifact(
     config: Optional[SynthConfig] = None,
     fixbank: Optional[FixBank] = None,
     llm_adapter: Optional[LLMAdapter] = None,
-    default_template_fn: Optional[Callable[[], Tuple[PatchTemplate, HoleSpace]]] = None
+    default_template_fn: Optional[Callable[..., Tuple[PatchTemplate, HoleSpace]]] = None,
+    skip_fixbank_lookup: bool = False
 ) -> Tuple[Artifact, Dict[str, Any]]:
     """High-level repair orchestration with Fix Bank and LLM integration.
     
@@ -181,7 +305,8 @@ def repair_artifact(
         llm_adapter=llm_adapter,
         default_template_fn=default_template_fn,
         provided_template=template,
-        provided_hole_space=hole_space
+        provided_hole_space=hole_space,
+        skip_fixbank_lookup=skip_fixbank_lookup
     )
     
     # Use Fix Bank constraints unless overridden
@@ -189,7 +314,11 @@ def repair_artifact(
         initial_constraints = fixbank_constraints
     
     # Step 3: Call CEGIS repair loop
+    logger.info("=" * 70)
     logger.info("Calling CEGIS repair loop")
+    logger.info(f"Template source: {'Fix Bank' if fixbank_hit else 'LLM' if llm_calls > 0 else 'Default'}")
+    logger.info(f"Template: {len(template.ops)} operations, {len(hole_space)} holes")
+    logger.info("=" * 70)
     repaired_artifact, repair_metadata = repair(
         artifact=artifact,
         template=template,

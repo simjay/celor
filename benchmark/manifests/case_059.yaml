@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-app
+  labels:
+    app: web-app
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: web-app
+  template:
+    metadata:
+      labels:
+        app: web-app
+        env: production-us
+        team: backend
+        tier: frontend
+    spec:
+      containers:
+      - name: app
+        image: python:latest
+  priorityClassName: critical

@@ -23,8 +23,8 @@ class Constraint:
           Meaning: profile=small always violates (e.g., resource checks)
           
         - forbidden_tuple: A combination of hole values always fails together
-          Example: Constraint("forbidden_tuple", {"holes": ["env", "replicas"], "values": ["prod", 2]})
-          Meaning: env=prod AND replicas=2 together violate policy
+          Example: Constraint("forbidden_tuple", {"holes": ["env", "replicas"], "values": ["production-us", 2]})
+          Meaning: env=production-us AND replicas=2 together violate policy
     
     Constraints are:
         1. Learned during synthesis from oracle failure hints
@@ -70,7 +70,7 @@ class CandidateGenerator:
     - Complexity: O(hole1_size × hole2_size × ... × holeN_size) worst case
     
     Example:
-        >>> hole_space = {"env": {"dev", "prod"}, "replicas": {2, 3}}
+        >>> hole_space = {"env": {"dev-us", "production-us"}, "replicas": {2, 3}}
         >>> gen = CandidateGenerator(hole_space, [])
         >>> list(gen)  # Generates all 4 combinations
         [{"env": "dev", "replicas": 2}, {"env": "dev", "replicas": 3}, ...]

@@ -32,7 +32,7 @@ Checks custom policy rules for production deployments.
 
 **Constraint Hints**:
     * Provides ``forbid_tuple`` hints for policy violations
-    * Example: ``forbid_tuple(env="prod", replicas=2)``
+    * Example: ``forbid_tuple(env="production-us", replicas=2)``
 
 **Example Violations**:
 
@@ -51,11 +51,11 @@ Checks custom policy rules for production deployments.
        ),
        Violation(
            id="policy.ENV_PROD_REPLICA_COUNT",
-           message="env=prod requires replicas in [3,5], got 2",
+           message="env=production-us requires replicas in [3,5], got 2",
            evidence={
                "forbid_tuple": {
                    "holes": ["env", "replicas"],
-                   "values": ["prod", 2]
+                   "values": ["production-us", 2]
                }
            }
        )

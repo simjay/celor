@@ -1,8 +1,9 @@
 """Simplified oracles for minimal demo.
 
-This module provides two focused oracles:
-1. ECRPolicyOracle: Checks that images come from AWS ECR and env labels match
-2. FormatOracle: Checks YAML syntax and K8s schema validation
+This module provides ECRPolicyOracle:
+- Checks that images come from AWS ECR and env labels match
+
+Note: Schema validation is provided by SchemaOracle in celor.k8s.oracles
 """
 
 import logging
@@ -15,19 +16,18 @@ from ruamel.yaml import YAML
 
 from celor.core.schema.violation import Violation
 from celor.k8s.artifact import K8sArtifact
+from celor.k8s.constants import VALID_ENV_NAMES
+from celor.k8s.utils import get_pod_template_label, get_containers
 
 logger = logging.getLogger(__name__)
 
-# Company standard environment names
-VALID_ENV_NAMES = {"production-us", "staging-us", "dev-us"}
-
 
 class ECRPolicyOracle:
-    """Oracle that enforces AWS ECR image policy and environment label normalization.
+    """Oracle that enforces AWS ECR image policy and environment label validation.
     
     Checks:
     1. Images must come from AWS ECR (not public Docker Hub)
-    2. Environment label must match company standard ("production-us", "staging-us", "dev-us")
+    2. Environment label must exactly match company standard ("production-us", "staging-us", "dev-us")
     3. ECR path must match the env label
     """
     
@@ -84,13 +84,10 @@ class ECRPolicyOracle:
                 continue
             
             # Extract env label
-            env = self._get_env_label(manifest)
+            env = get_pod_template_label(manifest, "env")
             
             # Check all containers
-            containers = (manifest.get("spec", {})
-                        .get("template", {})
-                        .get("spec", {})
-                        .get("containers", []))
+            containers = get_containers(manifest)
             
             for i, container in enumerate(containers):
                 image = container.get("image", "")
@@ -100,7 +97,7 @@ class ECRPolicyOracle:
                     continue
                 
                 # Check 1: Image must come from ECR
-                if not self._is_ecr_image(image):
+                if not (f".dkr.ecr." in image and self.account_id in image):
                     violations.append(Violation(
                         id="ecr.INVALID_IMAGE_SOURCE",
                         message=f"Container '{container_name}' uses public Docker image '{image}'. Must use AWS ECR image.",
@@ -118,7 +115,7 @@ class ECRPolicyOracle:
                     continue
                 
                 # Check 2: ECR path must match env label
-                if env and not self._ecr_path_matches_env(image, env):
+                if env and f"/{env}/" not in image:
                     violations.append(Violation(
                         id="ecr.ENV_MISMATCH",
                         message=f"Container '{container_name}' ECR path does not match env label '{env}'. Expected path containing '{env}'.",
@@ -150,148 +147,6 @@ class ECRPolicyOracle:
                             }
                         }
                     ))
-        
-        return violations
-    
-    def _get_env_label(self, manifest: dict) -> Optional[str]:
-        """Extract env label from pod template."""
-        return (manifest.get("spec", {})
-                .get("template", {})
-                .get("metadata", {})
-                .get("labels", {})
-                .get("env"))
-    
-    def _is_ecr_image(self, image: str) -> bool:
-        """Check if image comes from AWS ECR."""
-        return f".dkr.ecr." in image and self.account_id in image
-    
-    def _ecr_path_matches_env(self, image: str, env: str) -> bool:
-        """Check if ECR path contains the env value."""
-        return f"/{env}/" in image
-
-
-class FormatOracle:
-    """Oracle that checks YAML syntax and K8s schema validation.
-    
-    Uses kubernetes-validate library if available, otherwise falls back to kubectl.
-    """
-    
-    def __init__(self, use_kubernetes_validate: bool = True):
-        """Initialize FormatOracle.
-        
-        Args:
-            use_kubernetes_validate: If True, prefer kubernetes-validate library
-                                     over kubectl (default: True)
-        """
-        self.use_kubernetes_validate = use_kubernetes_validate
-        self._k8s_validate_available = self._check_kubernetes_validate()
-        self._kubectl_available = self._check_kubectl()
-    
-    def _check_kubernetes_validate(self) -> bool:
-        """Check if kubernetes-validate library is available."""
-        try:
-            import kubernetes_validate
-            return True
-        except ImportError:
-            return False
-    
-    def _check_kubectl(self) -> bool:
-        """Check if kubectl is available."""
-        try:
-            result = subprocess.run(
-                ["kubectl", "version", "--client"],
-                capture_output=True,
-                timeout=2
-            )
-            return result.returncode == 0
-        except (FileNotFoundError, subprocess.TimeoutExpired):
-            return False
-    
-    def __call__(self, artifact: K8sArtifact) -> List[Violation]:
-        """Check artifact for YAML/schema errors.
-        
-        Args:
-            artifact: K8sArtifact to validate
-            
-        Returns:
-            List of Violations (empty if all checks pass)
-        """
-        if self.use_kubernetes_validate and self._k8s_validate_available:
-            return self._validate_with_library(artifact)
-        elif self._kubectl_available:
-            return self._validate_with_kubectl(artifact)
-        else:
-            logger.warning("Neither kubernetes-validate nor kubectl available, skipping format validation")
-            return []
-    
-    def _validate_with_library(self, artifact: K8sArtifact) -> List[Violation]:
-        """Validate using kubernetes-validate library."""
-        violations = []
-        
-        try:
-            from kubernetes_validate import validate as k8s_validate
-        except ImportError:
-            return []
-        
-        yaml = YAML()
-        
-        for filepath, content in artifact.files.items():
-            try:
-                manifest = yaml.load(content)
-                
-                # Validate using kubernetes-validate
-                errors = k8s_validate(manifest, kubernetes_version="1.28")
-                
-                for error in errors:
-                    violations.append(Violation(
-                        id="format.VALIDATION_ERROR",
-                        message=str(error),
-                        path=[filepath],
-                        severity="error",
-                        evidence={"error": str(error)}
-                    ))
-                    
-            except Exception as e:
-                violations.append(Violation(
-                    id="format.VALIDATION_EXCEPTION",
-                    message=f"Validation failed: {e}",
-                    path=[filepath],
-                    severity="error",
-                    evidence={"exception": str(e)}
-                ))
-        
-        return violations
-    
-    def _validate_with_kubectl(self, artifact: K8sArtifact) -> List[Violation]:
-        """Validate using kubectl --dry-run."""
-        violations = []
-        
-        # Write to temp dir
-        with tempfile.TemporaryDirectory() as tmpdir:
-            artifact.write_to_dir(tmpdir)
-            
-            for filepath in artifact.files.keys():
-                full_path = Path(tmpdir) / filepath
-                
-                try:
-                    result = subprocess.run(
-                        ["kubectl", "apply", "--dry-run=client", "-f", str(full_path)],
-                        capture_output=True,
-                        text=True,
-                        timeout=5
-                    )
-                    
-                    if result.returncode != 0:
-                        violations.append(Violation(
-                            id="format.KUBECTL_VALIDATION_FAILED",
-                            message=f"kubectl validation failed: {result.stderr}",
-                            path=[filepath],
-                            severity="error",
-                            evidence={"stderr": result.stderr}
-                        ))
-                        
-                except (FileNotFoundError, subprocess.TimeoutExpired):
-                    pass
         
         return violations
 

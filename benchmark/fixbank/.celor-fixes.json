@@ -1,0 +1,2602 @@
+{
+  "entries": [
+    {
+      "hole_space": {
+        "env": [
+          "dev-us",
+          "production-us",
+          "staging-us"
+        ],
+        "version": [
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/postgres:13.4",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/postgres:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/postgres:13.4",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/postgres:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/postgres:latest"
+        ]
+      },
+      "learned_constraints": [],
+      "metadata": {
+        "candidates_tried": 1,
+        "created_at": "2025-12-10T15:29:54.953529",
+        "last_used": "2025-12-10T15:41:28.820620",
+        "success_count": 2
+      },
+      "signature": {
+        "context": {
+          "app": "data-processor",
+          "container": "web",
+          "env": "dev-us"
+        },
+        "error_codes": [
+          "IMAGE_NOT_FROM_ECR"
+        ],
+        "failed_oracles": [
+          "policy"
+        ]
+      },
+      "successful_assignment": null,
+      "template": {
+        "ops": [
+          {
+            "args": {
+              "key": "env",
+              "scope": "podTemplate",
+              "value": {
+                "$hole": "env"
+              }
+            },
+            "op": "EnsureLabel"
+          },
+          {
+            "args": {
+              "container": "web",
+              "version": {
+                "$hole": "version"
+              }
+            },
+            "op": "EnsureImageVersion"
+          }
+        ]
+      }
+    },
+    {
+      "hole_space": {
+        "env": [
+          "dev",
+          "dev-us",
+          "prod",
+          "production",
+          "production-us",
+          "staging",
+          "staging-us"
+        ],
+        "version": [
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/node:1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/node:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/node:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/node:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/node:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/node:stable",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/node:1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/node:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/node:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/node:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/node:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/node:stable",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/node:1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/node:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/node:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/node:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/node:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/node:stable",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/node:1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/node:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/node:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/node:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/node:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/node:stable",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/node:1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/node:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/node:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/node:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/node:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/node:stable",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/node:1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/node:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/node:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/node:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/node:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/node:stable",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/node:1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/node:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/node:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/node:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/node:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/node:stable"
+        ]
+      },
+      "learned_constraints": [],
+      "metadata": {
+        "candidates_tried": 1,
+        "created_at": "2025-12-10T15:29:58.776001",
+        "last_used": "2025-12-10T15:41:30.292267",
+        "success_count": 4
+      },
+      "signature": {
+        "context": {
+          "app": "data-processor",
+          "container": "worker",
+          "env": "production-us"
+        },
+        "error_codes": [
+          "ENV_PROD_IMAGE_TAG",
+          "IMAGE_NOT_FROM_ECR"
+        ],
+        "failed_oracles": [
+          "policy"
+        ]
+      },
+      "successful_assignment": null,
+      "template": {
+        "ops": [
+          {
+            "args": {
+              "key": "env",
+              "scope": "podTemplate",
+              "value": {
+                "$hole": "env"
+              }
+            },
+            "op": "EnsureLabel"
+          },
+          {
+            "args": {
+              "container": "worker",
+              "version": {
+                "$hole": "version"
+              }
+            },
+            "op": "EnsureImageVersion"
+          }
+        ]
+      }
+    },
+    {
+      "hole_space": {
+        "env": [
+          "dev-us",
+          "production-us",
+          "staging-us"
+        ],
+        "image": [
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/redis:6.2",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/redis:6.2",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/redis:6.2"
+        ]
+      },
+      "learned_constraints": [],
+      "metadata": {
+        "candidates_tried": 1,
+        "created_at": "2025-12-10T15:30:02.684334",
+        "last_used": "2025-12-10T15:41:29.047588",
+        "success_count": 2
+      },
+      "signature": {
+        "context": {
+          "app": "data-processor",
+          "container": "web",
+          "env": "dev-us"
+        },
+        "error_codes": [
+          "IMAGE_NOT_FROM_ECR"
+        ],
+        "failed_oracles": [
+          "policy",
+          "security"
+        ]
+      },
+      "successful_assignment": null,
+      "template": {
+        "ops": [
+          {
+            "args": {
+              "key": "env",
+              "scope": "podTemplate",
+              "value": {
+                "$hole": "env"
+              }
+            },
+            "op": "EnsureLabel"
+          },
+          {
+            "args": {
+              "container": "web",
+              "version": {
+                "$hole": "image"
+              }
+            },
+            "op": "EnsureImageVersion"
+          },
+          {
+            "args": {
+              "container": "web"
+            },
+            "op": "EnsureSecurityBaseline"
+          }
+        ]
+      }
+    },
+    {
+      "hole_space": {
+        "env": [
+          "dev",
+          "dev-us",
+          "production",
+          "production-us",
+          "staging",
+          "staging-us"
+        ],
+        "resource_profile": [
+          "large",
+          "medium",
+          "small"
+        ],
+        "service_image_version": [
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/redis:6.2.7",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/redis:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/redis:redis:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/redis:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/redis:redis:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/redis:6.2.7",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/redis:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/redis:redis:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/redis:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/redis:redis:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/redis:6.2.7",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/redis:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/redis:redis:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/redis:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/redis:redis:latest"
+        ]
+      },
+      "learned_constraints": [],
+      "metadata": {
+        "candidates_tried": 1,
+        "created_at": "2025-12-10T15:30:08.855411",
+        "last_used": "2025-12-10T15:41:29.222931",
+        "success_count": 2
+      },
+      "signature": {
+        "context": {
+          "app": "user-service",
+          "container": "service",
+          "env": "dev-us"
+        },
+        "error_codes": [
+          "IMAGE_NOT_FROM_ECR"
+        ],
+        "failed_oracles": [
+          "policy",
+          "resource"
+        ]
+      },
+      "successful_assignment": null,
+      "template": {
+        "ops": [
+          {
+            "args": {
+              "key": "env",
+              "scope": "podTemplate",
+              "value": {
+                "$hole": "env"
+              }
+            },
+            "op": "EnsureLabel"
+          },
+          {
+            "args": {
+              "container": "service",
+              "version": {
+                "$hole": "service_image_version"
+              }
+            },
+            "op": "EnsureImageVersion"
+          },
+          {
+            "args": {
+              "container": "service",
+              "profile": {
+                "$hole": "resource_profile"
+              }
+            },
+            "op": "EnsureResourceProfile"
+          }
+        ]
+      }
+    },
+    {
+      "hole_space": {
+        "env": [
+          "dev-us",
+          "production-us",
+          "staging-us"
+        ],
+        "version": [
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/redis:1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/redis:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/redis:1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/redis:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/redis:1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/redis:latest"
+        ]
+      },
+      "learned_constraints": [],
+      "metadata": {
+        "candidates_tried": 1,
+        "created_at": "2025-12-10T15:30:15.905085",
+        "last_used": "2025-12-10T15:41:29.339268",
+        "success_count": 2
+      },
+      "signature": {
+        "context": {
+          "app": "queue-worker",
+          "container": "api",
+          "env": "staging-us"
+        },
+        "error_codes": [
+          "IMAGE_NOT_FROM_ECR"
+        ],
+        "failed_oracles": [
+          "policy",
+          "security"
+        ]
+      },
+      "successful_assignment": null,
+      "template": {
+        "ops": [
+          {
+            "args": {
+              "key": "env",
+              "scope": "podTemplate",
+              "value": {
+                "$hole": "env"
+              }
+            },
+            "op": "EnsureLabel"
+          },
+          {
+            "args": {
+              "container": "api",
+              "version": {
+                "$hole": "version"
+              }
+            },
+            "op": "EnsureImageVersion"
+          },
+          {
+            "args": {
+              "container": "api"
+            },
+            "op": "EnsureSecurityBaseline"
+          }
+        ]
+      }
+    },
+    {
+      "hole_space": {
+        "env": [
+          "dev",
+          "dev-us",
+          "prod",
+          "production",
+          "production-us",
+          "staging",
+          "staging-us"
+        ],
+        "profile": [
+          "large",
+          "medium",
+          "small"
+        ],
+        "replicas": [
+          2,
+          3,
+          4,
+          5
+        ],
+        "version": [
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/postgres:1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/postgres:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/postgres:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/postgres:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/postgres:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/postgres:1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/postgres:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/postgres:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/postgres:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/postgres:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/postgres:1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/postgres:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/postgres:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/postgres:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/postgres:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/postgres:1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/postgres:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/postgres:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/postgres:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/postgres:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/postgres:1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/postgres:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/postgres:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/postgres:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/postgres:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/postgres:1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/postgres:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/postgres:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/postgres:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/postgres:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/postgres:1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/postgres:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/postgres:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/postgres:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/postgres:prod-2.0.0"
+        ]
+      },
+      "learned_constraints": [],
+      "metadata": {
+        "candidates_tried": 1,
+        "created_at": "2025-12-10T15:30:24.407060",
+        "last_used": "2025-12-10T15:41:29.461904",
+        "success_count": 2
+      },
+      "signature": {
+        "context": {
+          "app": "cache-service",
+          "container": "web",
+          "env": "production-us"
+        },
+        "error_codes": [
+          "ENV_PROD_IMAGE_TAG",
+          "ENV_PROD_PROFILE_SMALL",
+          "ENV_PROD_REPLICA_COUNT",
+          "IMAGE_NOT_FROM_ECR"
+        ],
+        "failed_oracles": [
+          "policy",
+          "security"
+        ]
+      },
+      "successful_assignment": null,
+      "template": {
+        "ops": [
+          {
+            "args": {
+              "key": "env",
+              "scope": "podTemplate",
+              "value": {
+                "$hole": "env"
+              }
+            },
+            "op": "EnsureLabel"
+          },
+          {
+            "args": {
+              "container": "web",
+              "version": {
+                "$hole": "version"
+              }
+            },
+            "op": "EnsureImageVersion"
+          },
+          {
+            "args": {
+              "container": "web"
+            },
+            "op": "EnsureSecurityBaseline"
+          },
+          {
+            "args": {
+              "container": "web",
+              "profile": {
+                "$hole": "profile"
+              }
+            },
+            "op": "EnsureResourceProfile"
+          },
+          {
+            "args": {
+              "replicas": {
+                "$hole": "replicas"
+              }
+            },
+            "op": "EnsureReplicas"
+          }
+        ]
+      }
+    },
+    {
+      "hole_space": {
+        "env": [
+          "dev-us",
+          "production-us",
+          "staging-us"
+        ],
+        "profile": [
+          "large",
+          "medium",
+          "small"
+        ],
+        "version": [
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/python:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/python:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/python:latest"
+        ]
+      },
+      "learned_constraints": [],
+      "metadata": {
+        "candidates_tried": 1,
+        "created_at": "2025-12-10T15:30:28.826674",
+        "last_used": "2025-12-10T15:41:29.562395",
+        "success_count": 2
+      },
+      "signature": {
+        "context": {
+          "app": "web-app",
+          "container": "web",
+          "env": "dev-us"
+        },
+        "error_codes": [
+          "IMAGE_NOT_FROM_ECR"
+        ],
+        "failed_oracles": [
+          "policy",
+          "resource"
+        ]
+      },
+      "successful_assignment": null,
+      "template": {
+        "ops": [
+          {
+            "args": {
+              "key": "env",
+              "scope": "podTemplate",
+              "value": {
+                "$hole": "env"
+              }
+            },
+            "op": "EnsureLabel"
+          },
+          {
+            "args": {
+              "container": "web",
+              "version": {
+                "$hole": "version"
+              }
+            },
+            "op": "EnsureImageVersion"
+          },
+          {
+            "args": {
+              "container": "web",
+              "profile": {
+                "$hole": "profile"
+              }
+            },
+            "op": "EnsureResourceProfile"
+          }
+        ]
+      }
+    },
+    {
+      "hole_space": {
+        "env": [
+          "dev-us",
+          "prod",
+          "production",
+          "production-us",
+          "staging-us"
+        ],
+        "profile": [
+          "large",
+          "medium",
+          "small"
+        ],
+        "replicas": [
+          3,
+          4,
+          5
+        ],
+        "version": [
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/nginx:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/nginx:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/nginx:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/nginx:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/nginx:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/nginx:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/nginx:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/nginx:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/nginx:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/nginx:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/nginx:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/nginx:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/nginx:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/nginx:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/nginx:prod-2.0.0"
+        ]
+      },
+      "learned_constraints": [],
+      "metadata": {
+        "candidates_tried": 1,
+        "created_at": "2025-12-10T15:30:33.880521",
+        "last_used": "2025-12-10T15:41:29.674389",
+        "success_count": 2
+      },
+      "signature": {
+        "context": {
+          "app": "backend",
+          "container": "app",
+          "env": "production-us"
+        },
+        "error_codes": [
+          "ENV_PROD_IMAGE_TAG",
+          "ENV_PROD_REPLICA_COUNT",
+          "IMAGE_NOT_FROM_ECR"
+        ],
+        "failed_oracles": [
+          "policy",
+          "resource"
+        ]
+      },
+      "successful_assignment": null,
+      "template": {
+        "ops": [
+          {
+            "args": {
+              "key": "env",
+              "scope": "podTemplate",
+              "value": {
+                "$hole": "env"
+              }
+            },
+            "op": "EnsureLabel"
+          },
+          {
+            "args": {
+              "container": "app",
+              "version": {
+                "$hole": "version"
+              }
+            },
+            "op": "EnsureImageVersion"
+          },
+          {
+            "args": {
+              "container": "app",
+              "profile": {
+                "$hole": "profile"
+              }
+            },
+            "op": "EnsureResourceProfile"
+          },
+          {
+            "args": {
+              "replicas": {
+                "$hole": "replicas"
+              }
+            },
+            "op": "EnsureReplicas"
+          }
+        ]
+      }
+    },
+    {
+      "hole_space": {
+        "env": [
+          "dev-us",
+          "production-us",
+          "staging-us"
+        ],
+        "profile": [
+          "large",
+          "medium",
+          "small"
+        ],
+        "replicas": [
+          3,
+          4,
+          5
+        ],
+        "version": [
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/app:1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/app:1.1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/app:1.0.0"
+        ]
+      },
+      "learned_constraints": [
+        {
+          "data": {
+            "holes": [
+              "env",
+              "version"
+            ],
+            "values": [
+              "dev-us",
+              "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/app:1.0.0"
+            ]
+          },
+          "type": "forbidden_tuple"
+        },
+        {
+          "data": {
+            "holes": [
+              "env",
+              "version"
+            ],
+            "values": [
+              "dev-us",
+              "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/app:1.1.0"
+            ]
+          },
+          "type": "forbidden_tuple"
+        },
+        {
+          "data": {
+            "holes": [
+              "env",
+              "version"
+            ],
+            "values": [
+              "dev-us",
+              "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/app:1.0.0"
+            ]
+          },
+          "type": "forbidden_tuple"
+        }
+      ],
+      "metadata": {
+        "candidates_tried": 4,
+        "created_at": "2025-12-10T15:30:40.607096",
+        "last_used": "2025-12-10T15:41:29.783588",
+        "success_count": 2
+      },
+      "signature": {
+        "context": {
+          "app": "api-service",
+          "container": "app",
+          "env": "production-us"
+        },
+        "error_codes": [
+          "ENV_PROD_REPLICA_COUNT",
+          "IMAGE_NOT_FROM_ECR"
+        ],
+        "failed_oracles": [
+          "policy",
+          "resource",
+          "security"
+        ]
+      },
+      "successful_assignment": null,
+      "template": {
+        "ops": [
+          {
+            "args": {
+              "key": "env",
+              "scope": "podTemplate",
+              "value": {
+                "$hole": "env"
+              }
+            },
+            "op": "EnsureLabel"
+          },
+          {
+            "args": {
+              "container": "app",
+              "version": {
+                "$hole": "version"
+              }
+            },
+            "op": "EnsureImageVersion"
+          },
+          {
+            "args": {
+              "container": "app"
+            },
+            "op": "EnsureSecurityBaseline"
+          },
+          {
+            "args": {
+              "container": "app",
+              "profile": {
+                "$hole": "profile"
+              }
+            },
+            "op": "EnsureResourceProfile"
+          },
+          {
+            "args": {
+              "replicas": {
+                "$hole": "replicas"
+              }
+            },
+            "op": "EnsureReplicas"
+          }
+        ]
+      }
+    },
+    {
+      "hole_space": {
+        "env": [
+          "dev-us",
+          "production-us",
+          "staging-us"
+        ],
+        "image_version": [
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/nginx:1.25.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/nginx:1.25.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/nginx:1.25.0"
+        ]
+      },
+      "learned_constraints": [],
+      "metadata": {
+        "candidates_tried": 1,
+        "created_at": "2025-12-10T15:30:44.205331",
+        "last_used": "2025-12-10T15:41:29.881614",
+        "success_count": 2
+      },
+      "signature": {
+        "context": {
+          "app": "frontend",
+          "container": "worker"
+        },
+        "error_codes": [
+          "IMAGE_NOT_FROM_ECR"
+        ],
+        "failed_oracles": [
+          "policy"
+        ]
+      },
+      "successful_assignment": null,
+      "template": {
+        "ops": [
+          {
+            "args": {
+              "key": "env",
+              "scope": "podTemplate",
+              "value": {
+                "$hole": "env"
+              }
+            },
+            "op": "EnsureLabel"
+          },
+          {
+            "args": {
+              "container": "worker",
+              "version": {
+                "$hole": "image_version"
+              }
+            },
+            "op": "EnsureImageVersion"
+          }
+        ]
+      }
+    },
+    {
+      "hole_space": {
+        "env": [
+          "dev-us",
+          "production-us",
+          "staging-us"
+        ],
+        "version": [
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/postgres:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/postgres:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/postgres:latest"
+        ]
+      },
+      "learned_constraints": [],
+      "metadata": {
+        "candidates_tried": 1,
+        "created_at": "2025-12-10T15:30:50.635834",
+        "last_used": "2025-12-10T15:41:29.976173",
+        "success_count": 2
+      },
+      "signature": {
+        "context": {
+          "app": "worker-pool",
+          "container": "service",
+          "env": "dev-us"
+        },
+        "error_codes": [
+          "IMAGE_NOT_FROM_ECR"
+        ],
+        "failed_oracles": [
+          "policy"
+        ]
+      },
+      "successful_assignment": null,
+      "template": {
+        "ops": [
+          {
+            "args": {
+              "key": "env",
+              "scope": "podTemplate",
+              "value": {
+                "$hole": "env"
+              }
+            },
+            "op": "EnsureLabel"
+          },
+          {
+            "args": {
+              "container": "service",
+              "version": {
+                "$hole": "version"
+              }
+            },
+            "op": "EnsureImageVersion"
+          }
+        ]
+      }
+    },
+    {
+      "hole_space": {
+        "env": [
+          "dev-us",
+          "prod",
+          "production",
+          "production-us",
+          "staging",
+          "staging-us"
+        ],
+        "profile": [
+          "large",
+          "medium"
+        ],
+        "replicas": [
+          3,
+          4,
+          5
+        ],
+        "version": [
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/python:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/python:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/python:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/python:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/python:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/python:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/python:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/python:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/python:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/python:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/python:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/python:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/python:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/python:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/python:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/python:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/python:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/python:prod-2.0.0"
+        ]
+      },
+      "learned_constraints": [],
+      "metadata": {
+        "candidates_tried": 1,
+        "created_at": "2025-12-10T15:30:56.230238",
+        "last_used": "2025-12-10T15:41:30.092289",
+        "success_count": 2
+      },
+      "signature": {
+        "context": {
+          "app": "payments-api",
+          "container": "worker",
+          "env": "production-us"
+        },
+        "error_codes": [
+          "ENV_PROD_IMAGE_TAG",
+          "ENV_PROD_PROFILE_SMALL",
+          "ENV_PROD_REPLICA_COUNT",
+          "IMAGE_NOT_FROM_ECR"
+        ],
+        "failed_oracles": [
+          "policy"
+        ]
+      },
+      "successful_assignment": null,
+      "template": {
+        "ops": [
+          {
+            "args": {
+              "key": "env",
+              "scope": "podTemplate",
+              "value": {
+                "$hole": "env"
+              }
+            },
+            "op": "EnsureLabel"
+          },
+          {
+            "args": {
+              "container": "worker",
+              "version": {
+                "$hole": "version"
+              }
+            },
+            "op": "EnsureImageVersion"
+          },
+          {
+            "args": {
+              "container": "worker",
+              "profile": {
+                "$hole": "profile"
+              }
+            },
+            "op": "EnsureResourceProfile"
+          },
+          {
+            "args": {
+              "replicas": {
+                "$hole": "replicas"
+              }
+            },
+            "op": "EnsureReplicas"
+          }
+        ]
+      }
+    },
+    {
+      "hole_space": {
+        "env": [
+          "dev",
+          "dev-us",
+          "production",
+          "production-us",
+          "staging",
+          "staging-us"
+        ],
+        "profile": [
+          "large",
+          "medium",
+          "small"
+        ],
+        "version": [
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/python:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/python:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/python:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/python:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/python:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/python:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/python:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/python:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/python:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/python:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/python:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/python:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/python:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/python:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/python:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/python:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/python:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/python:prod-2.0.0"
+        ]
+      },
+      "learned_constraints": [],
+      "metadata": {
+        "candidates_tried": 1,
+        "created_at": "2025-12-10T15:31:00.534989",
+        "last_used": "2025-12-10T15:41:30.199099",
+        "success_count": 2
+      },
+      "signature": {
+        "context": {
+          "app": "payments-api",
+          "container": "api",
+          "env": "production-us"
+        },
+        "error_codes": [
+          "ENV_PROD_IMAGE_TAG",
+          "ENV_PROD_PROFILE_SMALL",
+          "IMAGE_NOT_FROM_ECR"
+        ],
+        "failed_oracles": [
+          "policy"
+        ]
+      },
+      "successful_assignment": null,
+      "template": {
+        "ops": [
+          {
+            "args": {
+              "key": "env",
+              "scope": "podTemplate",
+              "value": {
+                "$hole": "env"
+              }
+            },
+            "op": "EnsureLabel"
+          },
+          {
+            "args": {
+              "container": "api",
+              "version": {
+                "$hole": "version"
+              }
+            },
+            "op": "EnsureImageVersion"
+          },
+          {
+            "args": {
+              "container": "api",
+              "profile": {
+                "$hole": "profile"
+              }
+            },
+            "op": "EnsureResourceProfile"
+          }
+        ]
+      }
+    },
+    {
+      "hole_space": {
+        "env": [
+          "dev",
+          "dev-us",
+          "production",
+          "production-us",
+          "staging",
+          "staging-us"
+        ],
+        "profile": [
+          "large",
+          "medium",
+          "small"
+        ],
+        "version": [
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/postgres:14.7",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/postgres:nginx:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/postgres:postgres:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/postgres:nginx:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/postgres:postgres:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/postgres:14.7",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/postgres:nginx:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/postgres:postgres:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/postgres:nginx:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/postgres:postgres:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/postgres:14.7",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/postgres:nginx:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/postgres:postgres:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/postgres:nginx:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/postgres:postgres:latest"
+        ]
+      },
+      "learned_constraints": [],
+      "metadata": {
+        "candidates_tried": 1,
+        "created_at": "2025-12-10T15:31:11.896100",
+        "last_used": "2025-12-10T15:41:30.381693",
+        "success_count": 2
+      },
+      "signature": {
+        "context": {
+          "app": "web-app",
+          "container": "api",
+          "env": "dev-us"
+        },
+        "error_codes": [
+          "IMAGE_NOT_FROM_ECR"
+        ],
+        "failed_oracles": [
+          "policy",
+          "resource",
+          "security"
+        ]
+      },
+      "successful_assignment": null,
+      "template": {
+        "ops": [
+          {
+            "args": {
+              "key": "env",
+              "scope": "podTemplate",
+              "value": {
+                "$hole": "env"
+              }
+            },
+            "op": "EnsureLabel"
+          },
+          {
+            "args": {
+              "container": "api",
+              "version": {
+                "$hole": "version"
+              }
+            },
+            "op": "EnsureImageVersion"
+          },
+          {
+            "args": {
+              "container": "api"
+            },
+            "op": "EnsureSecurityBaseline"
+          },
+          {
+            "args": {
+              "container": "api",
+              "profile": {
+                "$hole": "profile"
+              }
+            },
+            "op": "EnsureResourceProfile"
+          }
+        ]
+      }
+    },
+    {
+      "hole_space": {
+        "env": [
+          "dev",
+          "dev-us",
+          "prod",
+          "production",
+          "production-us",
+          "staging",
+          "staging-us"
+        ],
+        "profile": [
+          "large",
+          "medium",
+          "small"
+        ],
+        "version": [
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/python:1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/python:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/python:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/python:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/python:prod-2.0.1",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/python:stable",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/python:1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/python:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/python:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/python:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/python:prod-2.0.1",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/python:stable",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/python:1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/python:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/python:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/python:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/python:prod-2.0.1",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/python:stable",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/python:1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/python:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/python:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/python:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/python:prod-2.0.1",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/python:stable",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/python:1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/python:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/python:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/python:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/python:prod-2.0.1",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/python:stable",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/python:1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/python:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/python:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/python:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/python:prod-2.0.1",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/python:stable",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/python:1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/python:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/python:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/python:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/python:prod-2.0.1",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/python:stable"
+        ]
+      },
+      "learned_constraints": [],
+      "metadata": {
+        "candidates_tried": 1,
+        "created_at": "2025-12-10T15:31:18.230354",
+        "last_used": "2025-12-10T15:41:30.479184",
+        "success_count": 2
+      },
+      "signature": {
+        "context": {
+          "app": "web-app",
+          "container": "app",
+          "env": "production-us"
+        },
+        "error_codes": [
+          "ENV_PROD_IMAGE_TAG",
+          "IMAGE_NOT_FROM_ECR"
+        ],
+        "failed_oracles": [
+          "policy",
+          "resource",
+          "security"
+        ]
+      },
+      "successful_assignment": null,
+      "template": {
+        "ops": [
+          {
+            "args": {
+              "key": "env",
+              "scope": "podTemplate",
+              "value": {
+                "$hole": "env"
+              }
+            },
+            "op": "EnsureLabel"
+          },
+          {
+            "args": {
+              "container": "app",
+              "version": {
+                "$hole": "version"
+              }
+            },
+            "op": "EnsureImageVersion"
+          },
+          {
+            "args": {
+              "container": "app"
+            },
+            "op": "EnsureSecurityBaseline"
+          },
+          {
+            "args": {
+              "container": "app",
+              "profile": {
+                "$hole": "profile"
+              }
+            },
+            "op": "EnsureResourceProfile"
+          }
+        ]
+      }
+    },
+    {
+      "hole_space": {
+        "env": [
+          "dev-us",
+          "production-us",
+          "staging-us"
+        ],
+        "version": [
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/redis:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/redis:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/redis:latest"
+        ]
+      },
+      "learned_constraints": [],
+      "metadata": {
+        "candidates_tried": 1,
+        "created_at": "2025-12-10T15:31:23.529871",
+        "last_used": "2025-12-10T15:41:30.602272",
+        "success_count": 2
+      },
+      "signature": {
+        "context": {
+          "app": "queue-worker",
+          "container": "service"
+        },
+        "error_codes": [
+          "IMAGE_NOT_FROM_ECR"
+        ],
+        "failed_oracles": [
+          "policy",
+          "security"
+        ]
+      },
+      "successful_assignment": null,
+      "template": {
+        "ops": [
+          {
+            "args": {
+              "key": "app",
+              "scope": "podTemplate",
+              "value": "queue-worker"
+            },
+            "op": "EnsureLabel"
+          },
+          {
+            "args": {
+              "key": "team",
+              "scope": "podTemplate",
+              "value": "data"
+            },
+            "op": "EnsureLabel"
+          },
+          {
+            "args": {
+              "key": "tier",
+              "scope": "podTemplate",
+              "value": "frontend"
+            },
+            "op": "EnsureLabel"
+          },
+          {
+            "args": {
+              "key": "env",
+              "scope": "podTemplate",
+              "value": {
+                "$hole": "env"
+              }
+            },
+            "op": "EnsureLabel"
+          },
+          {
+            "args": {
+              "container": "service",
+              "version": {
+                "$hole": "version"
+              }
+            },
+            "op": "EnsureImageVersion"
+          },
+          {
+            "args": {
+              "container": "service"
+            },
+            "op": "EnsureSecurityBaseline"
+          }
+        ]
+      }
+    },
+    {
+      "hole_space": {
+        "env": [
+          "dev",
+          "dev-us",
+          "production",
+          "production-us",
+          "staging",
+          "staging-us"
+        ],
+        "profile": [
+          "large",
+          "medium",
+          "small"
+        ],
+        "team": [
+          "cache",
+          "infra",
+          "payments",
+          "platform"
+        ],
+        "version": [
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/node:1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/node:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/node:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/node:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/node:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/node:1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/node:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/node:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/node:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/node:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/node:1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/node:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/node:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/node:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/node:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/node:1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/node:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/node:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/node:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/node:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/node:1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/node:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/node:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/node:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/node:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/node:1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/node:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/node:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/node:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/node:prod-2.0.0"
+        ]
+      },
+      "learned_constraints": [],
+      "metadata": {
+        "candidates_tried": 1,
+        "created_at": "2025-12-10T15:31:29.632315",
+        "last_used": "2025-12-10T15:41:30.704072",
+        "success_count": 2
+      },
+      "signature": {
+        "context": {
+          "app": "cache-service",
+          "container": "worker",
+          "env": "production-us"
+        },
+        "error_codes": [
+          "ENV_PROD_IMAGE_TAG",
+          "IMAGE_NOT_FROM_ECR"
+        ],
+        "failed_oracles": [
+          "policy",
+          "resource"
+        ]
+      },
+      "successful_assignment": null,
+      "template": {
+        "ops": [
+          {
+            "args": {
+              "key": "env",
+              "scope": "podTemplate",
+              "value": {
+                "$hole": "env"
+              }
+            },
+            "op": "EnsureLabel"
+          },
+          {
+            "args": {
+              "key": "team",
+              "scope": "podTemplate",
+              "value": {
+                "$hole": "team"
+              }
+            },
+            "op": "EnsureLabel"
+          },
+          {
+            "args": {
+              "container": "worker",
+              "version": {
+                "$hole": "version"
+              }
+            },
+            "op": "EnsureImageVersion"
+          },
+          {
+            "args": {
+              "container": "worker",
+              "profile": {
+                "$hole": "profile"
+              }
+            },
+            "op": "EnsureResourceProfile"
+          }
+        ]
+      }
+    },
+    {
+      "hole_space": {
+        "env": [
+          "dev-us",
+          "production-us",
+          "staging-us"
+        ],
+        "profile": [
+          "large",
+          "medium"
+        ],
+        "replicas": [
+          3,
+          4,
+          5
+        ],
+        "version": [
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/node:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/node:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/node:prod-1.25.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/node:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/node:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/node:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/node:prod-1.25.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/node:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/node:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/node:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/node:prod-1.25.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/node:prod-2.0.0"
+        ]
+      },
+      "learned_constraints": [],
+      "metadata": {
+        "candidates_tried": 1,
+        "created_at": "2025-12-10T15:31:34.543711",
+        "last_used": "2025-12-10T15:41:30.838756",
+        "success_count": 2
+      },
+      "signature": {
+        "context": {
+          "app": "cache-service",
+          "container": "service",
+          "env": "production-us"
+        },
+        "error_codes": [
+          "ENV_PROD_IMAGE_TAG",
+          "ENV_PROD_PROFILE_SMALL",
+          "ENV_PROD_REPLICA_COUNT",
+          "IMAGE_NOT_FROM_ECR"
+        ],
+        "failed_oracles": [
+          "policy"
+        ]
+      },
+      "successful_assignment": null,
+      "template": {
+        "ops": [
+          {
+            "args": {
+              "key": "env",
+              "scope": "podTemplate",
+              "value": {
+                "$hole": "env"
+              }
+            },
+            "op": "EnsureLabel"
+          },
+          {
+            "args": {
+              "container": "service",
+              "version": {
+                "$hole": "version"
+              }
+            },
+            "op": "EnsureImageVersion"
+          },
+          {
+            "args": {
+              "container": "service"
+            },
+            "op": "EnsureSecurityBaseline"
+          },
+          {
+            "args": {
+              "container": "service",
+              "profile": {
+                "$hole": "profile"
+              }
+            },
+            "op": "EnsureResourceProfile"
+          },
+          {
+            "args": {
+              "replicas": {
+                "$hole": "replicas"
+              }
+            },
+            "op": "EnsureReplicas"
+          }
+        ]
+      }
+    },
+    {
+      "hole_space": {
+        "env": [
+          "dev-us",
+          "production-us",
+          "staging-us"
+        ],
+        "service_ecr_image_version": [
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/nginx:nginx:1.23.1",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/nginx:nginx:1.24.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/nginx:nginx:1.25.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/nginx:nginx:1.23.1",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/nginx:nginx:1.24.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/nginx:nginx:1.25.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/nginx:nginx:1.23.1",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/nginx:nginx:1.24.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/nginx:nginx:1.25.0"
+        ],
+        "service_resource_profile": [
+          "large",
+          "medium",
+          "small"
+        ]
+      },
+      "learned_constraints": [],
+      "metadata": {
+        "candidates_tried": 1,
+        "created_at": "2025-12-10T15:31:38.649577",
+        "last_used": "2025-12-10T15:41:31.459364",
+        "success_count": 4
+      },
+      "signature": {
+        "context": {
+          "app": "frontend",
+          "container": "service",
+          "env": "staging-us"
+        },
+        "error_codes": [
+          "IMAGE_NOT_FROM_ECR"
+        ],
+        "failed_oracles": [
+          "policy",
+          "resource",
+          "security"
+        ]
+      },
+      "successful_assignment": null,
+      "template": {
+        "ops": [
+          {
+            "args": {
+              "key": "env",
+              "scope": "podTemplate",
+              "value": {
+                "$hole": "env"
+              }
+            },
+            "op": "EnsureLabel"
+          },
+          {
+            "args": {
+              "container": "service",
+              "version": {
+                "$hole": "service_ecr_image_version"
+              }
+            },
+            "op": "EnsureImageVersion"
+          },
+          {
+            "args": {
+              "container": "service"
+            },
+            "op": "EnsureSecurityBaseline"
+          },
+          {
+            "args": {
+              "container": "service",
+              "profile": {
+                "$hole": "service_resource_profile"
+              }
+            },
+            "op": "EnsureResourceProfile"
+          }
+        ]
+      }
+    },
+    {
+      "hole_space": {
+        "env": [
+          "dev",
+          "dev-us",
+          "prod",
+          "production",
+          "production-us",
+          "staging",
+          "staging-us"
+        ],
+        "image_version": [
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/postgres:13.4",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/postgres:13.4",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/postgres:13.4"
+        ],
+        "resource_profile": [
+          "large",
+          "medium",
+          "small"
+        ]
+      },
+      "learned_constraints": [],
+      "metadata": {
+        "candidates_tried": 1,
+        "created_at": "2025-12-10T15:31:46.133512",
+        "last_used": "2025-12-10T15:41:31.894228",
+        "success_count": 4
+      },
+      "signature": {
+        "context": {
+          "app": "cache-service",
+          "container": "web"
+        },
+        "error_codes": [
+          "IMAGE_NOT_FROM_ECR"
+        ],
+        "failed_oracles": [
+          "policy",
+          "resource",
+          "security"
+        ]
+      },
+      "successful_assignment": null,
+      "template": {
+        "ops": [
+          {
+            "args": {
+              "key": "env",
+              "scope": "podTemplate",
+              "value": {
+                "$hole": "env"
+              }
+            },
+            "op": "EnsureLabel"
+          },
+          {
+            "args": {
+              "container": "web",
+              "version": {
+                "$hole": "image_version"
+              }
+            },
+            "op": "EnsureImageVersion"
+          },
+          {
+            "args": {
+              "container": "web"
+            },
+            "op": "EnsureSecurityBaseline"
+          },
+          {
+            "args": {
+              "container": "web",
+              "profile": {
+                "$hole": "resource_profile"
+              }
+            },
+            "op": "EnsureResourceProfile"
+          }
+        ]
+      }
+    },
+    {
+      "hole_space": {
+        "env": [
+          "dev",
+          "dev-us",
+          "prod",
+          "production",
+          "production-us",
+          "staging",
+          "staging-us"
+        ],
+        "priority_class": [
+          "critical"
+        ],
+        "profile": [
+          "large",
+          "medium",
+          "small"
+        ],
+        "replicas": [
+          10,
+          3,
+          4,
+          5
+        ],
+        "version": [
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/postgres:1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/postgres:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/postgres:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/postgres:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/postgres:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/postgres:prod-x.y.z",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/postgres:1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/postgres:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/postgres:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/postgres:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/postgres:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/postgres:prod-x.y.z",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/postgres:1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/postgres:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/postgres:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/postgres:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/postgres:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/postgres:prod-x.y.z",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/postgres:1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/postgres:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/postgres:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/postgres:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/postgres:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/postgres:prod-x.y.z",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/postgres:1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/postgres:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/postgres:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/postgres:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/postgres:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/postgres:prod-x.y.z",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/postgres:1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/postgres:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/postgres:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/postgres:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/postgres:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/postgres:prod-x.y.z",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/postgres:1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/postgres:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/postgres:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/postgres:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/postgres:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/postgres:prod-x.y.z"
+        ]
+      },
+      "learned_constraints": [],
+      "metadata": {
+        "candidates_tried": 1,
+        "created_at": "2025-12-10T15:31:51.683802",
+        "last_used": "2025-12-10T15:41:31.160604",
+        "success_count": 2
+      },
+      "signature": {
+        "context": {
+          "app": "frontend",
+          "container": "api",
+          "env": "production-us"
+        },
+        "error_codes": [
+          "ENV_PROD_IMAGE_TAG",
+          "ENV_PROD_PROFILE_SMALL",
+          "ENV_PROD_REPLICA_COUNT",
+          "IMAGE_NOT_FROM_ECR"
+        ],
+        "failed_oracles": [
+          "policy",
+          "security"
+        ]
+      },
+      "successful_assignment": null,
+      "template": {
+        "ops": [
+          {
+            "args": {
+              "key": "env",
+              "scope": "podTemplate",
+              "value": {
+                "$hole": "env"
+              }
+            },
+            "op": "EnsureLabel"
+          },
+          {
+            "args": {
+              "container": "api",
+              "version": {
+                "$hole": "version"
+              }
+            },
+            "op": "EnsureImageVersion"
+          },
+          {
+            "args": {
+              "container": "api"
+            },
+            "op": "EnsureSecurityBaseline"
+          },
+          {
+            "args": {
+              "container": "api",
+              "profile": {
+                "$hole": "profile"
+              }
+            },
+            "op": "EnsureResourceProfile"
+          },
+          {
+            "args": {
+              "replicas": {
+                "$hole": "replicas"
+              }
+            },
+            "op": "EnsureReplicas"
+          }
+        ]
+      }
+    },
+    {
+      "hole_space": {
+        "env": [
+          "dev-us",
+          "prod",
+          "production",
+          "production-us",
+          "staging",
+          "staging-us"
+        ],
+        "profile": [
+          "large",
+          "medium",
+          "small"
+        ],
+        "replicas": [
+          2,
+          3,
+          4,
+          5
+        ],
+        "version": [
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/nginx:dev-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/nginx:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/nginx:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/nginx:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/nginx:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/nginx:dev-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/nginx:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/nginx:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/nginx:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/nginx:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/nginx:dev-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/nginx:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/nginx:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/nginx:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/nginx:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/nginx:dev-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/nginx:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/nginx:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/nginx:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/nginx:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/nginx:dev-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/nginx:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/nginx:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/nginx:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/nginx:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/nginx:dev-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/nginx:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/nginx:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/nginx:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/nginx:prod-2.0.0"
+        ]
+      },
+      "learned_constraints": [],
+      "metadata": {
+        "candidates_tried": 1,
+        "created_at": "2025-12-10T15:31:57.299670",
+        "last_used": "2025-12-10T15:41:31.265863",
+        "success_count": 2
+      },
+      "signature": {
+        "context": {
+          "app": "frontend",
+          "container": "api",
+          "env": "production-us"
+        },
+        "error_codes": [
+          "ENV_PROD_IMAGE_TAG",
+          "ENV_PROD_REPLICA_COUNT",
+          "IMAGE_NOT_FROM_ECR"
+        ],
+        "failed_oracles": [
+          "policy",
+          "resource"
+        ]
+      },
+      "successful_assignment": null,
+      "template": {
+        "ops": [
+          {
+            "args": {
+              "key": "env",
+              "scope": "podTemplate",
+              "value": {
+                "$hole": "env"
+              }
+            },
+            "op": "EnsureLabel"
+          },
+          {
+            "args": {
+              "container": "api",
+              "version": {
+                "$hole": "version"
+              }
+            },
+            "op": "EnsureImageVersion"
+          },
+          {
+            "args": {
+              "container": "api",
+              "profile": {
+                "$hole": "profile"
+              }
+            },
+            "op": "EnsureResourceProfile"
+          },
+          {
+            "args": {
+              "replicas": {
+                "$hole": "replicas"
+              }
+            },
+            "op": "EnsureReplicas"
+          }
+        ]
+      }
+    },
+    {
+      "hole_space": {
+        "env": [
+          "dev-us",
+          "production-us",
+          "staging-us"
+        ],
+        "profile": [
+          "large",
+          "medium",
+          "small"
+        ],
+        "replicas": [
+          3,
+          4,
+          5
+        ],
+        "version": [
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/postgres:1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/postgres:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/postgres:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/postgres:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/postgres:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/postgres:prod-x.y.z",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/postgres:1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/postgres:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/postgres:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/postgres:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/postgres:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/postgres:prod-x.y.z",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/postgres:1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/postgres:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/postgres:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/postgres:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/postgres:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/postgres:prod-x.y.z"
+        ]
+      },
+      "learned_constraints": [],
+      "metadata": {
+        "candidates_tried": 1,
+        "created_at": "2025-12-10T15:32:02.157919",
+        "last_used": "2025-12-10T15:41:31.367922",
+        "success_count": 2
+      },
+      "signature": {
+        "context": {
+          "app": "backend",
+          "container": "worker",
+          "env": "production-us"
+        },
+        "error_codes": [
+          "ENV_PROD_IMAGE_TAG",
+          "ENV_PROD_REPLICA_COUNT",
+          "IMAGE_NOT_FROM_ECR"
+        ],
+        "failed_oracles": [
+          "policy",
+          "resource",
+          "security"
+        ]
+      },
+      "successful_assignment": null,
+      "template": {
+        "ops": [
+          {
+            "args": {
+              "key": "env",
+              "scope": "podTemplate",
+              "value": {
+                "$hole": "env"
+              }
+            },
+            "op": "EnsureLabel"
+          },
+          {
+            "args": {
+              "container": "worker",
+              "version": {
+                "$hole": "version"
+              }
+            },
+            "op": "EnsureImageVersion"
+          },
+          {
+            "args": {
+              "container": "worker"
+            },
+            "op": "EnsureSecurityBaseline"
+          },
+          {
+            "args": {
+              "container": "worker",
+              "profile": {
+                "$hole": "profile"
+              }
+            },
+            "op": "EnsureResourceProfile"
+          },
+          {
+            "args": {
+              "replicas": {
+                "$hole": "replicas"
+              }
+            },
+            "op": "EnsureReplicas"
+          }
+        ]
+      }
+    },
+    {
+      "hole_space": {
+        "env": [
+          "dev",
+          "dev-us",
+          "prod",
+          "production",
+          "production-us",
+          "staging",
+          "staging-us"
+        ],
+        "priority_class": [
+          "critical",
+          "high-priority"
+        ],
+        "profile": [
+          "large",
+          "medium",
+          "small"
+        ],
+        "replicas": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "version": [
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/redis:1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/redis:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/redis:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/redis:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/redis:prod-1.5.9",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/redis:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/redis:stable",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/redis:1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/redis:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/redis:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/redis:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/redis:prod-1.5.9",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/redis:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/redis:stable",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/redis:1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/redis:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/redis:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/redis:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/redis:prod-1.5.9",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/redis:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/redis:stable",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/redis:1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/redis:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/redis:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/redis:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/redis:prod-1.5.9",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/redis:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/redis:stable",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/redis:1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/redis:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/redis:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/redis:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/redis:prod-1.5.9",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/redis:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/redis:stable",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/redis:1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/redis:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/redis:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/redis:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/redis:prod-1.5.9",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/redis:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/redis:stable",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/redis:1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/redis:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/redis:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/redis:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/redis:prod-1.5.9",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/redis:prod-2.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/redis:stable"
+        ]
+      },
+      "learned_constraints": [],
+      "metadata": {
+        "candidates_tried": 1,
+        "created_at": "2025-12-10T15:32:14.316506",
+        "last_used": "2025-12-10T15:41:31.576773",
+        "success_count": 2
+      },
+      "signature": {
+        "context": {
+          "app": "queue-worker",
+          "container": "worker",
+          "env": "production-us"
+        },
+        "error_codes": [
+          "ENV_PROD_IMAGE_TAG",
+          "ENV_PROD_PROFILE_SMALL",
+          "ENV_PROD_REPLICA_COUNT",
+          "IMAGE_NOT_FROM_ECR"
+        ],
+        "failed_oracles": [
+          "policy",
+          "security"
+        ]
+      },
+      "successful_assignment": null,
+      "template": {
+        "ops": [
+          {
+            "args": {
+              "key": "env",
+              "scope": "podTemplate",
+              "value": {
+                "$hole": "env"
+              }
+            },
+            "op": "EnsureLabel"
+          },
+          {
+            "args": {
+              "container": "worker",
+              "version": {
+                "$hole": "version"
+              }
+            },
+            "op": "EnsureImageVersion"
+          },
+          {
+            "args": {
+              "container": "worker"
+            },
+            "op": "EnsureSecurityBaseline"
+          },
+          {
+            "args": {
+              "container": "worker",
+              "profile": {
+                "$hole": "profile"
+              }
+            },
+            "op": "EnsureResourceProfile"
+          },
+          {
+            "args": {
+              "replicas": {
+                "$hole": "replicas"
+              }
+            },
+            "op": "EnsureReplicas"
+          }
+        ]
+      }
+    },
+    {
+      "hole_space": {
+        "env": [
+          "dev-us",
+          "prod",
+          "production",
+          "production-us",
+          "staging",
+          "staging-us"
+        ],
+        "priority_class": [
+          "critical",
+          "high-priority",
+          "standard"
+        ],
+        "profile": [
+          "large",
+          "medium",
+          "small"
+        ],
+        "replicas": [
+          3,
+          4,
+          5
+        ],
+        "version": [
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/postgres:1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/postgres:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/postgres:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/postgres:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/postgres:prod-2.0.1",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/postgres:prod-x.y.z",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/postgres:1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/postgres:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/postgres:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/postgres:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/postgres:prod-2.0.1",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/prod/postgres:prod-x.y.z",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/postgres:1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/postgres:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/postgres:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/postgres:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/postgres:prod-2.0.1",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/postgres:prod-x.y.z",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/postgres:1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/postgres:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/postgres:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/postgres:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/postgres:prod-2.0.1",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/postgres:prod-x.y.z",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/postgres:1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/postgres:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/postgres:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/postgres:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/postgres:prod-2.0.1",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/postgres:prod-x.y.z",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/postgres:1.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/postgres:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/postgres:prod-1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/postgres:prod-1.2.3",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/postgres:prod-2.0.1",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/postgres:prod-x.y.z"
+        ]
+      },
+      "learned_constraints": [],
+      "metadata": {
+        "candidates_tried": 1,
+        "created_at": "2025-12-10T15:32:19.849153",
+        "last_used": "2025-12-10T15:41:31.686731",
+        "success_count": 2
+      },
+      "signature": {
+        "context": {
+          "app": "api-service",
+          "container": "service",
+          "env": "production-us"
+        },
+        "error_codes": [
+          "ENV_PROD_IMAGE_TAG",
+          "ENV_PROD_REPLICA_COUNT",
+          "IMAGE_NOT_FROM_ECR"
+        ],
+        "failed_oracles": [
+          "policy",
+          "resource",
+          "security"
+        ]
+      },
+      "successful_assignment": null,
+      "template": {
+        "ops": [
+          {
+            "args": {
+              "key": "env",
+              "scope": "podTemplate",
+              "value": {
+                "$hole": "env"
+              }
+            },
+            "op": "EnsureLabel"
+          },
+          {
+            "args": {
+              "container": "service",
+              "version": {
+                "$hole": "version"
+              }
+            },
+            "op": "EnsureImageVersion"
+          },
+          {
+            "args": {
+              "container": "service"
+            },
+            "op": "EnsureSecurityBaseline"
+          },
+          {
+            "args": {
+              "container": "service",
+              "profile": {
+                "$hole": "profile"
+              }
+            },
+            "op": "EnsureResourceProfile"
+          },
+          {
+            "args": {
+              "replicas": {
+                "$hole": "replicas"
+              }
+            },
+            "op": "EnsureReplicas"
+          },
+          {
+            "args": {
+              "name": {
+                "$hole": "priority_class"
+              }
+            },
+            "op": "EnsurePriorityClass"
+          }
+        ]
+      }
+    },
+    {
+      "hole_space": {
+        "env": [
+          "dev",
+          "dev-us",
+          "production",
+          "production-us",
+          "staging",
+          "staging-us"
+        ],
+        "image_version": [
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/cache-service:1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-us/redis:redis:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev/redis:redis:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/cache-service:1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/redis:redis:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/production/redis:redis:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/cache-service:1.0.0",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging-us/redis:redis:latest",
+          "123456789012.dkr.ecr.us-east-1.amazonaws.com/staging/redis:redis:latest"
+        ]
+      },
+      "learned_constraints": [],
+      "metadata": {
+        "candidates_tried": 1,
+        "created_at": "2025-12-10T15:32:25.377915",
+        "last_used": "2025-12-10T15:41:32.011729",
+        "success_count": 4
+      },
+      "signature": {
+        "context": {
+          "app": "cache-service",
+          "container": "worker"
+        },
+        "error_codes": [
+          "IMAGE_NOT_FROM_ECR"
+        ],
+        "failed_oracles": [
+          "policy",
+          "security"
+        ]
+      },
+      "successful_assignment": null,
+      "template": {
+        "ops": [
+          {
+            "args": {
+              "key": "tier",
+              "scope": "podTemplate",
+              "value": "data"
+            },
+            "op": "EnsureLabel"
+          },
+          {
+            "args": {
+              "key": "team",
+              "scope": "podTemplate",
+              "value": "payments"
+            },
+            "op": "EnsureLabel"
+          },
+          {
+            "args": {
+              "key": "app",
+              "scope": "podTemplate",
+              "value": "cache-service"
+            },
+            "op": "EnsureLabel"
+          },
+          {
+            "args": {
+              "key": "env",
+              "scope": "podTemplate",
+              "value": {
+                "$hole": "env"
+              }
+            },
+            "op": "EnsureLabel"
+          },
+          {
+            "args": {
+              "container": "worker",
+              "version": {
+                "$hole": "image_version"
+              }
+            },
+            "op": "EnsureImageVersion"
+          },
+          {
+            "args": {
+              "container": "worker"
+            },
+            "op": "EnsureSecurityBaseline"
+          }
+        ]
+      }
+    }
+  ],
+  "version": "1.0"
+}

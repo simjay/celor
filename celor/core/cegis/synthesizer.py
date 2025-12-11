@@ -60,7 +60,8 @@ class SynthResult:
 
 def extract_constraints_from_violations(
     candidate: CandidateAssignments,
-    violations: List[Violation]
+    violations: List[Violation],
+    hole_space: Optional[HoleSpace] = None
 ) -> list[Constraint]:
     """Extract constraints from oracle failure details.
     
@@ -70,48 +71,92 @@ def extract_constraints_from_violations(
     
     These hints are provided by oracles (e.g., PolicyOracle) to help
     the synthesizer learn which hole assignments always fail.
-
+    
+    IMPORTANT: Only creates constraints for holes that exist in the template's hole_space.
+    This prevents creating constraints for holes that don't exist (e.g., oracle says "env"
+    but template only has "ecr_image_version").
+    
     Args:
         candidate: The candidate assignment that failed
         violations: List of violations from oracles
-
+        hole_space: Optional hole space to validate constraint holes exist
+    
     Returns:
         List of newly learned Constraint objects
         
     Example:
-        >>> candidate = {"env": "prod", "replicas": 2}
+        >>> candidate = {"env": "production-us", "replicas": 2}
         >>> violations = [Violation(..., evidence={"forbid_tuple": {...}})]
-        >>> constraints = extract_constraints_from_violations(candidate, violations)
+        >>> constraints = extract_constraints_from_violations(candidate, violations, hole_space)
     """
     constraints = []
-
+    
+    # Get set of valid hole names if hole_space provided
+    valid_holes = set(hole_space.keys()) if hole_space else None
+    
     for violation in violations:
         if not violation.evidence or not isinstance(violation.evidence, dict):
                 continue
-
+        
         evidence = violation.evidence
         
         # Check for forbid_value hint
         if "forbid_value" in evidence:
             hint = evidence["forbid_value"]
             if isinstance(hint, dict) and "hole" in hint and "value" in hint:
-                constraint = Constraint(
-                    type="forbidden_value",
-                    data={"hole": hint["hole"], "value": hint["value"]}
-                )
-                constraints.append(constraint)
-                logger.debug(f"Learned constraint from oracle: {constraint}")
+                hole_name = hint["hole"]
+                # Only create constraint if hole exists in template
+                if valid_holes is None or hole_name in valid_holes:
+                    constraint = Constraint(
+                        type="forbidden_value",
+                        data={"hole": hole_name, "value": hint["value"]}
+                    )
+                    constraints.append(constraint)
+                    logger.debug(f"Learned constraint from oracle: {constraint}")
+                else:
+                    logger.debug(f"Skipping constraint for non-existent hole: {hole_name}")
         
         # Check for forbid_tuple hint
         if "forbid_tuple" in evidence:
             hint = evidence["forbid_tuple"]
             if isinstance(hint, dict) and "holes" in hint and "values" in hint:
-                constraint = Constraint(
-                    type="forbidden_tuple",
-                    data={"holes": hint["holes"], "values": hint["values"]}
-                )
-                constraints.append(constraint)
-                logger.debug(f"Learned constraint from oracle: {constraint}")
+                holes = hint["holes"]
+                values = hint["values"]
+                
+                # Filter to only holes that exist in template
+                if valid_holes is not None:
+                    filtered_holes = []
+                    filtered_values = []
+                    for h, v in zip(holes, values):
+                        if h in valid_holes:
+                            filtered_holes.append(h)
+                            filtered_values.append(v)
+                    
+                    # Only create constraint if at least one hole exists
+                    if filtered_holes:
+                        # If all holes filtered out, convert to forbid_value for the first matching hole
+                        if len(filtered_holes) == 1:
+                            constraint = Constraint(
+                                type="forbidden_value",
+                                data={"hole": filtered_holes[0], "value": filtered_values[0]}
+                            )
+                        else:
+                            constraint = Constraint(
+                                type="forbidden_tuple",
+                                data={"holes": filtered_holes, "values": filtered_values}
+                            )
+                        constraints.append(constraint)
+                        logger.debug(f"Learned constraint from oracle: {constraint}")
+                    else:
+                        logger.debug(f"Skipping constraint - no matching holes in template: {holes}")
+                else:
+                    # No hole_space provided - create constraint as-is (backward compatibility)
+                    constraint = Constraint(
+                        type="forbidden_tuple",
+                        data={"holes": holes, "values": values}
+                    )
+                    constraints.append(constraint)
+                    logger.debug(f"Learned constraint from oracle: {constraint}")
     
     return constraints
 
@@ -157,12 +202,16 @@ def synthesize(
     all_constraints = list(initial_constraints) if initial_constraints else []
     
     logger.info(f"Starting synthesis with {len(all_constraints)} initial constraints")
-    logger.info(f"Hole space size: {len(hole_space)} holes")
+    logger.info(f"Hole space: {len(hole_space)} holes")
+    for hole, values in hole_space.items():
+        logger.info(f"  - {hole}: {len(values)} values")
     
     # Create candidate generator
     generator = CandidateGenerator(hole_space, all_constraints)
     estimated_size = generator.estimate_size()
-    logger.info(f"Estimated candidates (before pruning): {estimated_size}")
+    logger.info(f"Estimated candidates (before constraint pruning): {estimated_size}")
+    if estimated_size > config.max_candidates:
+        logger.warning(f"⚠️  Search space ({estimated_size}) exceeds max_candidates ({config.max_candidates})")
     
     tried_candidates = 0
     start_time = time.time()
@@ -197,7 +246,10 @@ def synthesize(
                 )
             
             # Try this candidate
-            logger.debug(f"Trying candidate #{tried_candidates}: {candidate}")
+            if tried_candidates <= 5 or tried_candidates % 100 == 0:
+                logger.info(f"Trying candidate #{tried_candidates}: {candidate}")
+            else:
+                logger.debug(f"Trying candidate #{tried_candidates}: {candidate}")
             
             # Instantiate template → concrete patch
             try:
@@ -237,14 +289,51 @@ def synthesize(
                 )
             
             # Oracles failed - extract constraints
-            new_constraints = extract_constraints_from_violations(candidate, all_violations)
+            new_constraints = extract_constraints_from_violations(candidate, all_violations, hole_space)
             
             if new_constraints:
-                logger.debug(f"Learned {len(new_constraints)} new constraints")
-                all_constraints.extend(new_constraints)
+                # Deduplicate constraints (avoid adding the same constraint multiple times)
+                # Convert lists to tuples for hashability
+                def _make_hashable(data):
+                    """Convert constraint data to hashable form (lists -> tuples)."""
+                    if isinstance(data, dict):
+                        return tuple(sorted(
+                            (k, _make_hashable(v)) for k, v in data.items()
+                        ))
+                    elif isinstance(data, list):
+                        return tuple(_make_hashable(item) for item in data)
+                    else:
+                        return data
                 
-                # Update generator with new constraints (restarts search with pruning)
-                generator.update_constraints(all_constraints)
+                existing_constraint_set = {
+                    (c.type, _make_hashable(c.data))
+                    for c in all_constraints
+                }
+                
+                unique_new_constraints = []
+                for constraint in new_constraints:
+                    constraint_key = (constraint.type, _make_hashable(constraint.data))
+                    if constraint_key not in existing_constraint_set:
+                        unique_new_constraints.append(constraint)
+                        existing_constraint_set.add(constraint_key)
+                
+                if unique_new_constraints:
+                    logger.info(f"❌ Candidate #{tried_candidates} failed. Learned {len(unique_new_constraints)} new constraints:")
+                    for constraint in unique_new_constraints:
+                        logger.info(f"   {constraint}")
+                    all_constraints.extend(unique_new_constraints)
+                    
+                    # Update generator with new constraints (restarts search with pruning)
+                    generator.update_constraints(all_constraints)
+                    new_estimated_size = generator.estimate_size()
+                    logger.info(f"   Updated search space (after pruning): {new_estimated_size} candidates")
+                else:
+                    logger.debug(f"❌ Candidate #{tried_candidates} failed. All constraints already known (duplicate).")
+            else:
+                if tried_candidates <= 5:
+                    logger.info(f"❌ Candidate #{tried_candidates} failed. No constraints learned from violations:")
+                    for v in all_violations:
+                        logger.info(f"   - {v.id}: {v.message}")
         
         # Exhausted all candidates without finding solution
         logger.info(f"UNSAT: Exhausted all candidates ({tried_candidates} tried)")

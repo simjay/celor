@@ -37,7 +37,7 @@ Fix Bank entries are stored as JSON with the following structure:
      "signature": {
        "failed_oracles": ["policy", "security"],
        "error_codes": ["ENV_PROD_REPLICA_COUNT"],
-       "context": {"app": "payments-api", "env": "prod"}
+       "context": {"app": "payments-api", "env": "production-us"}
      },
      "template": {
        "ops": [
@@ -50,7 +50,7 @@ Fix Bank entries are stored as JSON with the following structure:
      "learned_constraints": [
        {
          "type": "forbidden_tuple",
-         "data": {"holes": ["env", "replicas"], "values": ["prod", 2]}
+         "data": {"holes": ["env", "replicas"], "values": ["production-us", 2]}
        }
      ],
      "successful_assignment": {"replicas": 3},
@@ -91,7 +91,7 @@ Signatures are fingerprints of oracle failures that identify similar problems. T
    signature = {
        "failed_oracles": ["policy", "security"],
        "error_codes": ["ENV_PROD_REPLICA_COUNT", "NO_RUN_AS_NON_ROOT"],
-       "context": {"app": "payments-api", "env": "prod"}
+       "context": {"app": "payments-api", "env": "production-us"}
    }
 
 * **failed_oracles**: Names of oracles that detected violations
@@ -129,7 +129,7 @@ After successful synthesis, all learned constraints are stored in the Fix Bank e
      },
      {
        "type": "forbidden_tuple",
-       "data": {"holes": ["env", "replicas"], "values": ["prod", 2]}
+       "data": {"holes": ["env", "replicas"], "values": ["production-us", 2]}
      }
    ]
 

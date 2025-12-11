@@ -62,12 +62,12 @@ class TestSignatureBuilding:
         sig_a = {
             "failed_oracles": ["policy", "security"],
             "error_codes": ["ENV_PROD_REPLICA_COUNT"],
-            "context": {"env": "prod"}
+            "context": {"env": "production-us"}
         }
         sig_b = {
             "failed_oracles": ["policy", "security"],
             "error_codes": ["ENV_PROD_REPLICA_COUNT"],
-            "context": {"env": "prod", "app": "different"}  # Different context
+            "context": {"env": "production-us", "app": "different"}  # Different context
         }
         
         assert signatures_match(sig_a, sig_b)  # Context is optional
@@ -101,6 +101,36 @@ class TestSignatureBuilding:
         }
         
         assert not signatures_match(sig_a, sig_b)
+    
+    def test_signatures_require_container_match(self):
+        """Test that signatures with different container names don't match."""
+        sig_a = {
+            "failed_oracles": ["policy"],
+            "error_codes": ["IMAGE_NOT_FROM_ECR"],
+            "context": {"container": "web"}
+        }
+        sig_b = {
+            "failed_oracles": ["policy"],
+            "error_codes": ["IMAGE_NOT_FROM_ECR"],
+            "context": {"container": "api"}  # Different container
+        }
+        
+        assert not signatures_match(sig_a, sig_b)
+    
+    def test_signatures_match_same_container(self):
+        """Test that signatures with same container name match."""
+        sig_a = {
+            "failed_oracles": ["policy"],
+            "error_codes": ["IMAGE_NOT_FROM_ECR"],
+            "context": {"container": "web", "env": "production-us"}
+        }
+        sig_b = {
+            "failed_oracles": ["policy"],
+            "error_codes": ["IMAGE_NOT_FROM_ECR"],
+            "context": {"container": "web", "env": "staging-us"}  # Different env, same container
+        }
+        
+        assert signatures_match(sig_a, sig_b)  # Should match (same container)
 
 
 class TestHoleSpaceSerialization:
@@ -109,7 +139,7 @@ class TestHoleSpaceSerialization:
     def test_serialize_hole_space(self):
         """Test serializing hole space to JSON-compatible format."""
         hole_space: HoleSpace = {
-            "env": {"staging", "prod"},
+            "env": {"staging-us", "production-us"},
             "replicas": {2, 3, 4}
         }
         
@@ -120,13 +150,13 @@ class TestHoleSpaceSerialization:
         assert isinstance(serialized["replicas"], list)
         
         # Should be sorted for determinism
-        assert serialized["env"] == ["prod", "staging"]
+        assert serialized["env"] == ["production-us", "staging-us"]
         assert serialized["replicas"] == [2, 3, 4]
 
     def test_deserialize_hole_space(self):
         """Test deserializing hole space from JSON."""
         data = {
-            "env": ["staging", "prod"],
+            "env": ["staging-us", "production-us"],
             "replicas": [2, 3, 4]
         }
         
@@ -134,7 +164,7 @@ class TestHoleSpaceSerialization:
         
         # Should be sets
         assert isinstance(hole_space["env"], set)
-        assert hole_space["env"] == {"staging", "prod"}
+        assert hole_space["env"] == {"staging-us", "production-us"}
         assert hole_space["replicas"] == {2, 3, 4}
 
     def test_roundtrip(self):
@@ -230,9 +260,9 @@ class TestFixBank:
             template = PatchTemplate(ops=[
                 PatchOp("EnsureLabel", {"key": "env", "value": HoleRef("env")})
             ])
-            hole_space: HoleSpace = {"env": {"prod", "staging"}}
+            hole_space: HoleSpace = {"env": {"production-us", "staging-us"}}
             constraints = [
-                Constraint("forbidden_value", {"hole": "env", "value": "dev"})
+                Constraint("forbidden_value", {"hole": "env", "value": "dev-us"})
             ]
             
             entry = FixEntry(
@@ -240,7 +270,7 @@ class TestFixBank:
                 template=template,
                 hole_space=hole_space,
                 learned_constraints=constraints,
-                successful_assignment={"env": "prod"}
+                successful_assignment={"env": "production-us"}
             )
             
             fixbank.add(entry)
@@ -256,7 +286,7 @@ class TestFixBank:
             assert len(loaded_entry.template.ops) == 1
             assert "env" in loaded_entry.hole_space
             assert len(loaded_entry.learned_constraints) == 1
-            assert loaded_entry.successful_assignment == {"env": "prod"}
+            assert loaded_entry.successful_assignment == {"env": "production-us"}
             
         finally:
             Path(temp_path).unlink()

@@ -1,0 +1,28 @@
+[
+  {
+    "id": "policy.IMAGE_NOT_FROM_ECR",
+    "message": "Image must come from AWS ECR, got postgres:15",
+    "severity": "error",
+    "path": [
+      "case_069.yaml",
+      "spec",
+      "template",
+      "spec",
+      "containers",
+      "image"
+    ]
+  },
+  {
+    "id": "resource.MISSING_RESOURCES.web",
+    "message": "Container web must specify resources",
+    "severity": "error",
+    "path": [
+      "case_069.yaml",
+      "spec",
+      "template",
+      "spec",
+      "containers",
+      "web"
+    ]
+  }
+]

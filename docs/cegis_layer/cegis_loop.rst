@@ -69,14 +69,14 @@ Extract constraints from violation evidence to prune the search space.
 
    # Violation evidence
    evidence = ViolationEvidence(
-       constraint_hints={"forbid_tuple": [("env", "prod"), ("replicas", 2)]}
+       constraint_hints={"forbid_tuple": [("env", "production-us"), ("replicas", 2)]}
    )
    
    # Extracted constraint
    constraint = Constraint(
        type="forbidden_tuple",
        holes=["env", "replicas"],
-       values=("prod", 2)
+       values=("production-us", 2)
    )
 
 **Component**: ``celor.core.cegis.synthesizer.extract_constraints_from_violations()``
@@ -99,19 +99,19 @@ Systematically enumerate candidate assignments from HoleSpace.
 .. code-block:: python
 
    hole_space = {
-       "env": {"staging", "prod"},
+       "env": {"staging-us", "production-us"},
        "replicas": {2, 3, 4, 5}
    }
    constraints = [
-       Constraint(type="forbidden_tuple", holes=["env", "replicas"], values=("prod", 2))
+       Constraint(type="forbidden_tuple", holes=["env", "replicas"], values=("production-us", 2))
    ]
    
    generator = CandidateGenerator(hole_space, constraints)
    candidates = [
-       {"env": "staging", "replicas": 2},  # Valid
-       {"env": "staging", "replicas": 3},  # Valid
-       {"env": "prod", "replicas": 2},     # Pruned (violates constraint)
-       {"env": "prod", "replicas": 3},     # Valid
+       {"env": "staging-us", "replicas": 2},  # Valid
+       {"env": "staging-us", "replicas": 3},  # Valid
+       {"env": "production-us", "replicas": 2},     # Pruned (violates constraint)
+       {"env": "production-us", "replicas": 3},     # Valid
        # ... more candidates
    ]
 
@@ -239,11 +239,11 @@ Example Iteration
 
    # deployment.yaml (non-compliant)
    spec:
-     replicas: 2  # Violation: prod requires 3-5
+     replicas: 2  # Violation: production-us requires 3-5
      template:
        metadata:
          labels:
-           env: prod
+           env: production-us
 
 **Template and HoleSpace**
 
@@ -256,10 +256,10 @@ Example Iteration
 
 **Iteration 1**
 
-1. **Verify**: Run PolicyOracle → violation: "prod requires 3-5 replicas"
+1. **Verify**: Run PolicyOracle → violation: "production-us requires 3-5 replicas"
 
 2. **Extract Constraints**: 
-   - Constraint: ``forbidden_tuple(env="prod", replicas=2)``
+   - Constraint: ``forbidden_tuple(env="production-us", replicas=2)``
 
 3. **Enumerate Candidates**:
    - Candidate 1: ``{"replicas": 2}`` → Pruned (violates constraint)
@@ -283,7 +283,7 @@ Example Iteration
      template:
        metadata:
          labels:
-           env: prod
+           env: production-us
 
 Performance Considerations
 --------------------------

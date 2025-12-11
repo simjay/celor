@@ -1,0 +1,43 @@
+[
+  {
+    "id": "policy.IMAGE_NOT_FROM_ECR",
+    "message": "Image must come from AWS ECR, got python:3.10",
+    "severity": "error",
+    "path": [
+      "case_034.yaml",
+      "spec",
+      "template",
+      "spec",
+      "containers",
+      "image"
+    ]
+  },
+  {
+    "id": "security.NO_RUN_AS_NON_ROOT.service",
+    "message": "Container service must set runAsNonRoot=true",
+    "severity": "error",
+    "path": [
+      "case_034.yaml",
+      "spec",
+      "template",
+      "spec",
+      "containers",
+      "service",
+      "securityContext"
+    ]
+  },
+  {
+    "id": "security.PRIVILEGE_ESCALATION.service",
+    "message": "Container service must set allowPrivilegeEscalation=false",
+    "severity": "error",
+    "path": [
+      "case_034.yaml",
+      "spec",
+      "template",
+      "spec",
+      "containers",
+      "service",
+      "securityContext"
+    ]
+  }
+]

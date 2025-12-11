@@ -33,21 +33,21 @@ Create a file ``deployment.yaml`` with policy violations:
        metadata:
          labels:
            app: payments-api
-           env: prod
+           env: production-us
        spec:
          containers:
          - name: payments-api
-           image: docker.io/library/payments-api:latest  # Violation: not from ECR, and :latest not allowed in prod
+           image: docker.io/library/payments-api:latest  # Violation: not from ECR, and :latest not allowed in production-us
            resources:
              requests:
                cpu: "100m"
-               memory: "128Mi"  # Violation: prod requires medium/large profile
+               memory: "128Mi"  # Violation: production-us requires medium/large profile
 
 This manifest has several violations:
   - **ECR policy violation**: Image from ``docker.io`` (must be AWS ECR)
   - Replicas too low for production (needs 3-5)
   - Missing required labels (team, tier)
-  - Image tag is ``:latest`` (not allowed in prod)
+  - Image tag is ``:latest`` (not allowed in production-us)
   - Resource profile too small (needs medium/large)
   - Missing security context
   - Missing priorityClassName
@@ -183,7 +183,7 @@ Check the repaired manifest in ``fixed/deployment.yaml``:
        metadata:
          labels:
            app: payments-api
-           env: prod
+           env: production-us
            team: payments      # Added
            tier: backend        # Added
        spec:

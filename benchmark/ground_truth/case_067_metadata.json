@@ -1,0 +1,24 @@
+{
+  "case_id": "067",
+  "violation_types": [
+    "ecr_policy",
+    "missing_resources",
+    "policy",
+    "resource"
+  ],
+  "violation_count": 2,
+  "complexity": "medium",
+  "expected_fixes": [
+    {
+      "type": "EnsureImageVersion",
+      "container": "web"
+    },
+    {
+      "type": "EnsureResourceProfile",
+      "container": "web",
+      "profile": "medium"
+    }
+  ],
+  "search_space_size": 18,
+  "difficulty": "medium"
+}

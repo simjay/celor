@@ -105,7 +105,7 @@ class TestLLMAdapter:
                 ]
             },
             "hole_space": {
-                "env": ["staging", "prod"],
+                "env": ["staging-us", "production-us"],
                 "replicas": [3, 4, 5]
             }
         })
@@ -118,7 +118,7 @@ class TestLLMAdapter:
         
         # Verify hole space
         assert "env" in hole_space
-        assert hole_space["env"] == {"staging", "prod"}
+        assert hole_space["env"] == {"staging-us", "production-us"}
         assert hole_space["replicas"] == {3, 4, 5}
 
     @patch('openai.OpenAI')
@@ -267,7 +267,7 @@ class TestLLMAdapterIntegration:
                 ]
             },
             "hole_space": {
-                "env": ["staging", "prod"],
+                "env": ["staging-us", "production-us"],
                 "replicas": [3, 4, 5]
             }
         })

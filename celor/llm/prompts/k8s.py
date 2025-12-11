@@ -10,7 +10,7 @@ Layer 3 of LLM architecture: Domain-specific prompt logic.
 """
 
 import logging
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from celor.core.schema.artifact import Artifact
 from celor.core.schema.violation import Violation
@@ -62,15 +62,15 @@ Example PatchTemplate:
     "ops": [
       {"op": "EnsureLabel", "args": {"scope": "podTemplate", "key": "env", "value": {"$hole": "env"}}},
       {"op": "EnsureLabel", "args": {"scope": "podTemplate", "key": "team", "value": {"$hole": "team"}}},
-      {"op": "EnsureImageVersion", "args": {"container": "payments-api", "version": {"$hole": "version"}}},
-      {"op": "EnsureSecurityBaseline", "args": {"container": "payments-api"}},
-      {"op": "EnsureResourceProfile", "args": {"container": "payments-api", "profile": {"$hole": "profile"}}},
+      {"op": "EnsureImageVersion", "args": {"container": "<EXTRACT_FROM_MANIFEST>", "version": {"$hole": "version"}}},
+      {"op": "EnsureSecurityBaseline", "args": {"container": "<EXTRACT_FROM_MANIFEST>"}},
+      {"op": "EnsureResourceProfile", "args": {"container": "<EXTRACT_FROM_MANIFEST>", "profile": {"$hole": "profile"}}},
       {"op": "EnsureReplicas", "args": {"replicas": {"$hole": "replicas"}}},
       {"op": "EnsurePriorityClass", "args": {"name": {"$hole": "priority_class"}}}
     ]
   },
   "hole_space": {
-    "env": ["staging", "prod"],
+    "env": ["staging-us", "production-us"],
     "team": ["payments", "platform"],
     "version": ["prod-1.2.3", "prod-1.2.4"],
     "profile": ["medium", "large"],
@@ -78,12 +78,15 @@ Example PatchTemplate:
     "priority_class": ["critical", "high-priority"]
   }
 }
+
+Note: Replace "<EXTRACT_FROM_MANIFEST>" with the actual container name from the manifest snippet above.
 """
 
 
 def build_k8s_prompt(
     artifact: Artifact,
-    violations: List[Violation]
+    violations: List[Violation],
+    previous_feedback: Optional[str] = None
 ) -> str:
     """Build K8s-specific prompt for PatchTemplate generation.
     
@@ -107,6 +110,11 @@ def build_k8s_prompt(
     # Format violations
     violation_text = format_violations(violations)
     
+    # Build feedback section if provided
+    feedback_section = ""
+    if previous_feedback:
+        feedback_section = f"## Previous Repair Attempt Feedback\n\n{previous_feedback}\n\n"
+    
     # Build comprehensive prompt
     prompt = f"""You are a Kubernetes expert helping to generate repair templates using CeLoR's PatchDSL.
 
@@ -121,8 +129,7 @@ def build_k8s_prompt(
 The manifest has the following validation failures:
 
 {violation_text}
-
-## Important Context
+{feedback_section}## Important Context
 
 **ECR Image Format**: All images must use AWS ECR with this exact format:
 - Account ID: 123456789012
@@ -134,6 +141,20 @@ The manifest has the following validation failures:
 - If manifest has "production", it should be "production-us"
 - If manifest has "staging", it should be "staging-us"
 - If manifest has "dev", it should be "dev-us"
+
+## CRITICAL: Container Name Extraction
+
+**You MUST extract the container name from the manifest snippet above.**
+- Look for the `container:` field in the manifest snippet (under `spec:` section)
+- Use that EXACT container name (as a string literal) in all operations that require a container parameter:
+  - `EnsureImageVersion`: Use the actual container name from manifest
+  - `EnsureSecurityBaseline`: Use the actual container name from manifest
+  - `EnsureResourceProfile`: Use the actual container name from manifest
+- DO NOT use hardcoded names like "payments-api", "nginx", or "web" from examples
+- DO NOT use placeholders like "<EXTRACT_FROM_MANIFEST>" in your output
+- Example: If manifest snippet shows `container: service`, use `"container": "service"` in your template
+- Example: If manifest snippet shows `container: api-server`, use `"container": "api-server"` in your template
+- The container name is typically correct and does NOT need to be a hole (use concrete string value)
 
 ## Your Task
 
@@ -156,7 +177,8 @@ Generate a PatchTemplate that fixes these violations using the K8s PatchDSL oper
 4. Define a reasonable hole_space with valid options for each hole
    - Include both valid and invalid values (synthesizer will learn constraints)
    - Keep domains small (2-10 values per hole)
-   - Example: If fixing env label, hole_space might be: {{"env": ["production-us", "staging-us", "dev-us", "prod", "production"]}}
+   - Example: If fixing env label, hole_space might be: {{"env": ["production-us", "staging-us", "dev-us"]}}
+     Note: Include invalid values like "prod" or "production" only if you want to demonstrate constraint learning
 
 ## Output Format
 
@@ -315,3 +337,82 @@ def get_example_templates() -> str:
         Example template JSON
     """
     return EXAMPLE_TEMPLATE
+
+
+def build_k8s_concrete_patch_prompt(
+    artifact: Artifact,
+    violations: List[Violation],
+    previous_feedback: Optional[str] = None
+) -> str:
+    """Build K8s-specific prompt for concrete patch generation (no holes).
+    
+    This is for pure-LLM baseline where LLM must provide complete,
+    concrete values without any synthesis.
+    
+    Args:
+        artifact: K8s artifact to repair
+        violations: Oracle failures to address
+        previous_feedback: Optional feedback from previous attempts
+        
+    Returns:
+        Prompt string for LLM
+    """
+    manifest_snippet = extract_manifest_snippet(artifact)
+    violation_text = format_violations(violations)
+    
+    feedback_section = ""
+    if previous_feedback:
+        feedback_section = f"## Previous Repair Attempt Feedback\n\n{previous_feedback}\n\n"
+    
+    prompt = f"""You are a Kubernetes expert helping to fix a broken deployment manifest.
+
+## Current Deployment Manifest
+
+```yaml
+{manifest_snippet}
+```
+
+## Oracle Failures
+
+The manifest has the following validation failures:
+
+{violation_text}
+{feedback_section}## Important Context
+
+**ECR Image Format**: All images must use AWS ECR with this exact format:
+- Account ID: 123456789012
+- Region: us-east-1
+- Format: `123456789012.dkr.ecr.us-east-1.amazonaws.com/{{env}}/{{image_name}}:{{tag}}`
+- Example: `123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/nginx:1.25.0`
+
+**Environment Labels**: Must be one of: "production-us", "staging-us", "dev-us"
+
+**CRITICAL: Extract container name from manifest snippet above and use it exactly.**
+
+## Your Task
+
+Generate a COMPLETE, CONCRETE patch with ALL values filled in (NO holes, NO placeholders).
+
+{PATCHDSL_DOCS}
+
+## Output Format
+
+Return ONLY valid JSON in this format:
+
+{{
+  "patch": {{
+    "ops": [
+      {{"op": "EnsureLabel", "args": {{"scope": "podTemplate", "key": "env", "value": "production-us"}}}},
+      {{"op": "EnsureImageVersion", "args": {{"container": "<EXTRACT_FROM_MANIFEST>", "version": "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/<image_name>:prod-1.0.0"}}}},
+      ...
+    ]
+  }}
+}}
+
+**IMPORTANT**: 
+- Replace "<EXTRACT_FROM_MANIFEST>" with the actual container name from the manifest
+- Use CONCRETE values (no {{"$hole": "..."}})
+- All values must be complete and ready to apply
+"""
+    
+    return prompt

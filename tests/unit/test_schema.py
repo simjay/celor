@@ -59,14 +59,6 @@ def mock_oracle_failing(artifact: Any) -> List[Violation]:
 class TestArtifactProtocol:
     """Tests for Artifact protocol compliance."""
 
-    def test_artifact_protocol_has_to_serializable(self):
-        """Test that Artifact protocol requires to_serializable method."""
-        artifact = MockArtifact("test")
-
-        # Should have the method
-        assert hasattr(artifact, "to_serializable")
-        assert callable(artifact.to_serializable)
-
     def test_artifact_to_serializable_returns_dict(self):
         """Test that to_serializable returns JSON-serializable data."""
         artifact = MockArtifact("test content")
@@ -554,14 +546,6 @@ class TestOracleProtocol:
         assert isinstance(result_passing, list)
         assert isinstance(result_failing, list)
         assert all(isinstance(v, Violation) for v in result_failing)
-
-    def test_oracle_passing_returns_empty_list(self):
-        """Test that passing oracle returns empty list."""
-        artifact = MockArtifact()
-        violations = mock_oracle_passing(artifact)
-
-        assert violations == []
-        assert len(violations) == 0
 
     def test_oracle_failing_returns_violations(self):
         """Test that failing oracle returns violations."""

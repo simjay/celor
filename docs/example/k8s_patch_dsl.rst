@@ -37,7 +37,7 @@ Add or update labels in deployment manifest.
    op = PatchOp("EnsureLabel", {
        "scope": "both",
        "key": "env",
-       "value": "prod"
+       "value": "production-us"
    })
    
    # Add label with hole for synthesis
@@ -194,7 +194,7 @@ K8s patches are applied using the K8s-specific executor:
        PatchOp("EnsureLabel", {
            "scope": "both",
            "key": "env",
-           "value": "prod"
+           "value": "production-us"
        }),
        PatchOp("EnsureImageVersion", {
            "container": "payments-api",
@@ -225,7 +225,7 @@ Example: Complete Patch
        PatchOp("EnsureLabel", {
            "scope": "both",
            "key": "env",
-           "value": "prod"
+           "value": "production-us"
        }),
        PatchOp("EnsureLabel", {
            "scope": "both",

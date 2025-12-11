@@ -106,12 +106,12 @@ Oracles provide **constraint hints** in violation evidence to guide synthesis. T
    
    violation = Violation(
        id="policy.ENV_PROD_REPLICA_COUNT",
-       message="env=prod requires replicas in [3,5], got 2",
+       message="env=production-us requires replicas in [3,5], got 2",
        evidence=ViolationEvidence(
            constraint_hints={
                "forbid_tuple": {
                    "holes": ["env", "replicas"],
-                   "values": ["prod", 2]
+                   "values": ["production-us", 2]
                }
            }
        )

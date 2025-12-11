@@ -41,11 +41,11 @@ class TestEnsureLabel:
     def test_ensure_label_pod_template(self):
         """Test adding label to pod template."""
         files = {"deployment.yaml": SAMPLE_DEPLOYMENT}
-        op = PatchOp("EnsureLabel", {"scope": "podTemplate", "key": "env", "value": "prod"})
+        op = PatchOp("EnsureLabel", {"scope": "podTemplate", "key": "env", "value": "production-us"})
         
         result = apply_k8s_op(files, op)
         
-        assert "env: prod" in result["deployment.yaml"]
+        assert "env: production-us" in result["deployment.yaml"]
         # Should be in pod template labels, not deployment labels
 
     def test_ensure_label_deployment(self):
@@ -191,14 +191,14 @@ class TestApplyK8sPatch:
         """Test applying multiple operations in sequence."""
         files = {"deployment.yaml": SAMPLE_DEPLOYMENT}
         patch = Patch(ops=[
-            PatchOp("EnsureLabel", {"scope": "podTemplate", "key": "env", "value": "prod"}),
+            PatchOp("EnsureLabel", {"scope": "podTemplate", "key": "env", "value": "production-us"}),
             PatchOp("EnsureReplicas", {"replicas": 3}),
             PatchOp("EnsureResourceProfile", {"container": "payments-api", "profile": "medium"})
         ])
         
         result = apply_k8s_patch(files, patch)
         
-        assert "env: prod" in result["deployment.yaml"]
+        assert "env: production-us" in result["deployment.yaml"]
         assert "replicas: 3" in result["deployment.yaml"]
         assert "cpu: 500m" in result["deployment.yaml"]
 

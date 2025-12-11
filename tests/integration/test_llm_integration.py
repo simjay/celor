@@ -49,10 +49,14 @@ class TestLLMIntegration:
                 ]
             },
             "hole_space": {
-                "env": ["prod"],
+                "env": ["production-us"],
                 "team": ["payments"],
                 "tier": ["backend"],
-                "version": ["prod-1.2.3", "prod-1.2.4", "prod-1.3.0"],
+                "version": [
+                    "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/payments-api:prod-1.2.3",
+                    "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/payments-api:prod-1.2.4",
+                    "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/payments-api:prod-1.3.0"
+                ],
                 "profile": ["medium", "large"],
                 "replicas": [3, 4, 5],
                 "priority_class": ["critical", "high-priority"]
@@ -112,10 +116,14 @@ class TestLLMIntegration:
                 ]
             },
             "hole_space": {
-                "env": ["prod"],
+                "env": ["production-us"],
                 "team": ["payments"],
                 "tier": ["backend"],
-                "version": ["prod-1.2.3", "prod-1.2.4", "prod-1.3.0"],
+                "version": [
+                    "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/payments-api:prod-1.2.3",
+                    "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/payments-api:prod-1.2.4",
+                    "123456789012.dkr.ecr.us-east-1.amazonaws.com/production-us/payments-api:prod-1.3.0"
+                ],
                 "profile": ["medium", "large"],
                 "replicas": [3, 4, 5],
                 "priority_class": ["critical", "high-priority"]
@@ -209,7 +217,7 @@ class TestLLMIntegration:
                 ]
             },
             "hole_space": {
-                "env": ["staging", "prod"],
+                "env": ["staging-us", "production-us"],
                 "replicas": [3, 4, 5]
             }
         })

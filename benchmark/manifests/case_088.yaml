@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker-pool
+  labels:
+    app: worker-pool
+spec:
+  replicas: 6
+  selector:
+    matchLabels:
+      app: worker-pool
+  template:
+    metadata:
+      labels:
+        app: worker-pool
+        team: frontend
+        tier: data
+    spec:
+      containers:
+      - name: service
+        image: nginx:latest
+  priorityClassName: critical

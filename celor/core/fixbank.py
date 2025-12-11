@@ -212,7 +212,7 @@ def build_signature(artifact: Artifact, violations: List[Violation]) -> Dict[str
         {
             "failed_oracles": ["policy", "security"],
             "error_codes": ["ENV_PROD_REPLICA_COUNT", "MISSING_LABEL_TEAM"],
-            "context": {"env": "prod", "app": "payments-api"}
+            "context": {"env": "production-us", "app": "payments-api"}
         }
     """
     # Extract unique oracle names from violation IDs
@@ -236,11 +236,18 @@ def build_signature(artifact: Artifact, violations: List[Violation]) -> Dict[str
         if "files" in serialized:
             # Try to extract from K8s manifest
             from ruamel.yaml import YAML
+            from celor.k8s.utils import get_containers
             yaml = YAML()
             
             for filepath, content in serialized["files"].items():
-                if "deployment" in filepath.lower():
+                # Check if this is a Deployment manifest (by kind or filename)
+                try:
                     manifest = yaml.load(content)
+                    kind = manifest.get("kind", "").lower()
+                    
+                    # Only process Deployment manifests
+                    if kind != "deployment":
+                        continue
                     
                     # Extract app name
                     context["app"] = manifest.get("metadata", {}).get("name", "")
@@ -253,7 +260,19 @@ def build_signature(artifact: Artifact, violations: List[Violation]) -> Dict[str
                           .get("env", ""))
                     if env:
                         context["env"] = env
+                    
+                    # CRITICAL: Extract primary container name
+                    # Templates are container-specific, so signatures must include container name
+                    containers = get_containers(manifest)
+                    if containers and len(containers) > 0:
+                        primary_container = containers[0].get("name")
+                        if primary_container:
+                            context["container"] = primary_container
+                            logger.debug(f"Extracted container name: {primary_container} from signature")
                     break
+                except Exception as e:
+                    logger.debug(f"Failed to parse manifest from {filepath}: {e}")
+                    continue
     except Exception:
         # Context extraction is best-effort
         pass
@@ -268,15 +287,16 @@ def build_signature(artifact: Artifact, violations: List[Violation]) -> Dict[str
 def signatures_match(sig_a: Dict[str, Any], sig_b: Dict[str, Any]) -> bool:
     """Check if two signatures match.
     
-    V1 implementation uses exact matching on oracle names and error codes.
-    Future versions could use fuzzy matching or similarity metrics.
+    V1 implementation uses exact matching on oracle names, error codes, and container name.
+    Container name is REQUIRED because templates are container-specific - a template
+    for container "web" won't work for container "api".
     
     Args:
         sig_a: First signature
         sig_b: Second signature
         
     Returns:
-        True if signatures match (represent same type of regression)
+        True if signatures match (represent same type of regression with same container)
     """
     # Exact match on failed oracles
     if sig_a.get("failed_oracles") != sig_b.get("failed_oracles"):
@@ -286,8 +306,19 @@ def signatures_match(sig_a: Dict[str, Any], sig_b: Dict[str, Any]) -> bool:
     if sig_a.get("error_codes") != sig_b.get("error_codes"):
         return False
     
-    # Optional: match on context (env, app)
-    # For now, consider context optional (don't require exact match)
+    # CRITICAL: Match on container name (templates are container-specific)
+    # If either signature has a container, both must have the same container
+    context_a = sig_a.get("context", {})
+    context_b = sig_b.get("context", {})
+    container_a = context_a.get("container")
+    container_b = context_b.get("container")
+    
+    if container_a or container_b:
+        # If either has a container, both must match exactly
+        if container_a != container_b:
+            return False
+    
+    # Optional: match on other context (env, app) - but container is required if present
     
     return True
 

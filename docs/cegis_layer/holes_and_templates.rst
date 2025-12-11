@@ -20,7 +20,7 @@ Traditional LLM repair might generate:
      template:
        metadata:
          labels:
-           env: prod
+           env: production-us
 
 **Problems**
    * LLM might guess wrong value
@@ -76,7 +76,7 @@ Example
 .. code-block:: python
 
    hole_space = {
-       "env": {"prod"},
+       "env": {"production-us"},
        "team": {"payments"},
        "tier": {"backend"},
        "replicas": {3, 4, 5},
@@ -131,10 +131,10 @@ Constraints skip invalid candidates:
 
 .. code-block:: python
 
-   # Constraint: forbid_tuple(env=prod, replicas=2)
+   # Constraint: forbid_tuple(env=production-us, replicas=2)
    # Candidates:
-   # {"env": "prod", "replicas": 2} → Pruned (violates constraint)
-   # {"env": "prod", "replicas": 3} → Valid (proceed)
+   # {"env": "production-us", "replicas": 2} → Pruned (violates constraint)
+   # {"env": "production-us", "replicas": 3} → Valid (proceed)
 
 **Constraint Learning**
 
@@ -153,11 +153,11 @@ Example: Complete Synthesis
 .. code-block:: yaml
 
    spec:
-     replicas: 2  # Violation: prod requires 3-5
+     replicas: 2  # Violation: production-us requires 3-5
      template:
        metadata:
          labels:
-           env: prod
+           env: production-usuction-us
 
 **Template and HoleSpace**
 
@@ -176,7 +176,7 @@ Example: Complete Synthesis
        Violation(
            id="policy.ENV_PROD_REPLICA_COUNT",
            evidence=ViolationEvidence(
-               constraint_hints={"forbid_tuple": [("env", "prod"), ("replicas", 2)]}
+               constraint_hints={"forbid_tuple": [("env", "production-us"), ("replicas", 2)]}
            )
        )
    ]
@@ -189,7 +189,7 @@ Example: Complete Synthesis
        Constraint(
            type="forbidden_tuple",
            holes=["env", "replicas"],
-           values=("prod", 2)
+           values=("production-us", 2)
        )
    ]
 
@@ -200,7 +200,7 @@ Example: Complete Synthesis
    generator = CandidateGenerator(hole_space, constraints)
    
    # Candidate 1: {"replicas": 2}
-   # → Pruned (violates constraint: prod + replicas=2)
+   # → Pruned (violates constraint: production-us + replicas=2)
    
    # Candidate 2: {"replicas": 3}
    # → Valid, proceed
@@ -232,7 +232,7 @@ Repaired manifest:
      template:
        metadata:
          labels:
-           env: prod
+           env: production-us
 
 Advantages of Holes + Synthesis
 --------------------------------
