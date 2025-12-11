@@ -6,7 +6,7 @@
 
 > **Inference-time verification and repair for LLM-generated Kubernetes manifests**
 
-CeLoR transforms LLM-generated Kubernetes manifests into verified, compliant configurations through a two-phase architecture: LLM calls generate parametric repair templates with holes, then a local CEGIS (Counterexample-Guided Inductive Synthesis) loop with a custom synthesizer fills those holes—no additional LLM tokens required during synthesis.
+CeLoR transforms LLM-generated Kubernetes manifests into verified, compliant configurations through a two-phase architecture: LLM calls generate parametric repair templates with holes, then a local CEGIS (Counterexample-Guided Inductive Synthesis) loop with a custom synthesizer fills those holes, no additional LLM tokens required during synthesis.
 
 ## Features
 
