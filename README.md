@@ -2,6 +2,7 @@
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Research Report](https://img.shields.io/badge/📄-Research%20Report-red)](report/celor.pdf)
 
 > **Inference-time verification and repair for LLM-generated Kubernetes manifests**
 

@@ -12,8 +12,9 @@ Collects comprehensive metrics and generates comparison reports.
 
 import json
 import logging
+import os
+import sys
 import time
-from collections import defaultdict
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -42,9 +43,6 @@ FIXBANK_DIR = BENCHMARK_DIR / "fixbank"
 FIXBANK_DIR.mkdir(exist_ok=True)
 RESULTS_DIR.mkdir(exist_ok=True)
 
-# Ensure config.json is found (it's in project root)
-import os
-import sys
 # Change to project root so config.json can be found
 os.chdir(PROJECT_ROOT)
 
@@ -133,7 +131,6 @@ def run_celor_cold_start(case_id: int, manifest_path: Path, fixbank: Optional[Fi
         )
         
         # Run repair (with Fix Bank for learning, but skip lookups in cold start)
-        # Add debug: log LLM template if generated
         repaired_artifact, metadata = repair_artifact(
             artifact=artifact,
             oracles=oracles,
@@ -145,7 +142,7 @@ def run_celor_cold_start(case_id: int, manifest_path: Path, fixbank: Optional[Fi
             skip_fixbank_lookup=True  # Cold start: skip lookups, but still write to Fix Bank
         )
         
-        # Add template info to metadata for debugging
+        # Add template info to metadata
         if "template_ops" not in metadata:
             metadata["template_ops"] = []
         if "hole_space_keys" not in metadata:

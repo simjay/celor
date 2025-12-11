@@ -145,7 +145,6 @@ class TestApplyPatch:
         result = artifact.apply_patch(patch)
         
         assert isinstance(result, K8sArtifact)
-        # TODO: In Phase 2, verify patch is actually applied
 
 
 class TestFromFile:
